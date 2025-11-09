@@ -1,47 +1,53 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ExternalLink, Zap } from "lucide-react";
-
-const projects = [
-  {
-    name: "TrapGPT",
-    description: "AI-powered music production and beat creation assistant",
-    status: "Active",
-    link: "#",
-  },
-  {
-    name: "AURA-BREE",
-    description: "Autonomous authentication and AI consciousness platform",
-    status: "Beta",
-    link: "#",
-  },
-  {
-    name: "GhostVault",
-    description: "Quantum-encrypted data storage and vault system",
-    status: "Active",
-    link: "#",
-  },
-  {
-    name: "CodexCrafter",
-    description: "AI-assisted development environment with natural language coding",
-    status: "Development",
-    link: "#",
-  },
-  {
-    name: "SKIDE",
-    description: "Supreme Kinetic IDE with quantum-speed compilation",
-    status: "Active",
-    link: "#",
-  },
-  {
-    name: "ZIONEX",
-    description: "Neural blockchain fusion for decentralized AI governance",
-    status: "Research",
-    link: "#",
-  },
-];
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Projects = () => {
+  const [projects, setProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setProjects(data || []);
+    } catch (error: any) {
+      console.error("Error loading projects:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load projects",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Live':
+        return 'bg-primary/20 text-primary';
+      case 'Testing':
+      case 'Development':
+        return 'bg-secondary/20 text-secondary';
+      default:
+        return 'bg-muted text-muted-foreground';
+    }
+  };
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-6xl mx-auto">
@@ -55,41 +61,73 @@ const Projects = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project, index) => (
-            <Card
-              key={index}
-              className="bg-card/50 border-secondary/20 hover:border-secondary/60 transition-all group hover:scale-105"
-            >
-              <CardHeader>
-                <div className="flex items-start justify-between mb-2">
-                  <CardTitle className="text-xl">{project.name}</CardTitle>
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    project.status === 'Active' ? 'bg-primary/20 text-primary' :
-                    project.status === 'Beta' ? 'bg-secondary/20 text-secondary' :
-                    project.status === 'Development' ? 'bg-accent/20 text-accent' :
-                    'bg-muted text-muted-foreground'
-                  }`}>
-                    {project.status}
-                  </span>
-                </div>
-                <CardDescription>{project.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button 
-                  variant="outline" 
-                  className="w-full border-secondary/30 group-hover:border-secondary/60"
-                  asChild
-                >
-                  <a href={project.link}>
-                    Launch App
-                    <ExternalLink className="w-4 h-4 ml-2" />
-                  </a>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-64" />
+            ))}
+          </div>
+        ) : projects.length === 0 ? (
+          <div className="text-center py-12 bg-card/50 border border-secondary/20 rounded-lg">
+            <Zap className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">No projects yet. Check back soon!</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {projects.map((project) => (
+              <Card
+                key={project.id}
+                className="bg-card/50 border-secondary/20 hover:border-secondary/60 transition-all group hover:scale-105 overflow-hidden"
+              >
+                {project.image_url && (
+                  <div className="aspect-video w-full overflow-hidden">
+                    <img
+                      src={project.image_url}
+                      alt={project.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+                <CardHeader>
+                  <div className="flex items-start justify-between mb-2">
+                    <CardTitle className="text-xl">{project.name}</CardTitle>
+                    <span className={`text-xs px-2 py-1 rounded ${getStatusColor(project.status)}`}>
+                      {project.status}
+                    </span>
+                  </div>
+                  {project.category && (
+                    <Badge variant="outline" className="w-fit mb-2">
+                      {project.category}
+                    </Badge>
+                  )}
+                  <CardDescription>{project.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {project.link ? (
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-secondary/30 group-hover:border-secondary/60"
+                      asChild
+                    >
+                      <a href={project.link} target="_blank" rel="noopener noreferrer">
+                        Launch App
+                        <ExternalLink className="w-4 h-4 ml-2" />
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      disabled
+                    >
+                      Coming Soon
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
 
         <div className="mt-12 bg-gradient-to-r from-secondary/10 to-primary/10 border border-secondary/30 rounded-lg p-8 text-center">
           <Zap className="w-12 h-12 text-secondary mx-auto mb-4 animate-pulse-glow" />

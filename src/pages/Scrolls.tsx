@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { BookOpen, Flame } from "lucide-react";
-import { getScrolls } from "@/api/ghostvault";
+import { BookOpen, Flame, Download } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import ScrollCard from "@/components/ScrollCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 const Scrolls = () => {
@@ -13,17 +14,30 @@ const Scrolls = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    getScrolls()
-      .then(setScrolls)
-      .catch(() => {
-        toast({
-          title: "Error",
-          description: "Failed to load scrolls from GhostVault",
-          variant: "destructive",
-        });
-      })
-      .finally(() => setLoading(false));
-  }, [toast]);
+    loadScrolls();
+  }, []);
+
+  const loadScrolls = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('scrolls')
+        .select('*')
+        .eq('status', 'Published')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setScrolls(data || []);
+    } catch (error: any) {
+      console.error("Error loading scrolls:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load scrolls from the database",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -44,21 +58,34 @@ const Scrolls = () => {
               <Skeleton key={i} className="h-48 w-full" />
             ))}
           </div>
+        ) : scrolls.length === 0 ? (
+          <div className="text-center py-12 bg-card/30 border border-primary/20 rounded-lg">
+            <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">No published scrolls yet. Check back soon!</p>
+          </div>
         ) : (
           <div className="space-y-6">
-            {scrolls.map((scroll, index) => (
+            {scrolls.map((scroll) => (
               <ScrollCard
-                key={index}
+                key={scroll.id}
                 title={scroll.title}
                 description={scroll.description}
                 pages={scroll.pages}
                 status={scroll.status}
                 onRead={() => setSelectedScroll(scroll)}
                 onDownload={() => {
-                  toast({
-                    title: "Download Started",
-                    description: `Downloading ${scroll.title}...`,
-                  });
+                  if (scroll.file_url) {
+                    window.open(scroll.file_url, '_blank');
+                    toast({
+                      title: "Download Started",
+                      description: `Downloading ${scroll.title}...`,
+                    });
+                  } else {
+                    toast({
+                      title: "No file available",
+                      description: "This scroll doesn't have a downloadable file.",
+                    });
+                  }
                 }}
               />
             ))}
@@ -83,8 +110,20 @@ const Scrolls = () => {
                 <DialogTitle className="text-2xl">{selectedScroll.title}</DialogTitle>
                 <DialogDescription>{selectedScroll.description}</DialogDescription>
               </DialogHeader>
-              <div className="prose prose-invert max-w-none mt-4">
-                <pre className="whitespace-pre-wrap font-sans">{selectedScroll.content}</pre>
+              {selectedScroll.file_url && (
+                <div className="mb-4">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => window.open(selectedScroll.file_url, '_blank')}
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Download PDF Version
+                  </Button>
+                </div>
+              )}
+              <div className="prose prose-invert max-w-none mt-4 dark:prose-invert">
+                <div dangerouslySetInnerHTML={{ __html: selectedScroll.content }} />
               </div>
             </>
           )}
