@@ -19,26 +19,15 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/20">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/feed" className="flex items-center gap-2 group">
             <Flame className="w-8 h-8 text-primary animate-pulse-glow" />
             <span className="text-xl font-bold text-glow-ember">GodsIMiJ Empire</span>
           </Link>
           
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/realms" className="text-foreground/80 hover:text-primary transition-colors">
-              Realms
-            </Link>
-            <Link to="/scrolls" className="text-foreground/80 hover:text-primary transition-colors">
-              Scrolls
-            </Link>
-            <Link to="/media" className="text-foreground/80 hover:text-secondary transition-colors">
-              Media
-            </Link>
-            <Link to="/projects" className="text-foreground/80 hover:text-primary transition-colors">
-              Projects
-            </Link>
-            <Link to="/ai" className="text-foreground/80 hover:text-secondary transition-colors">
-              AI
+            <Link to="/feed" className="text-foreground/80 hover:text-primary transition-colors flex items-center gap-2">
+              <Flame className="w-4 h-4" />
+              Feed
             </Link>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -75,16 +64,6 @@ const Navbar = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Link to="/api-docs" className="text-foreground/80 hover:text-accent transition-colors flex items-center gap-1">
-              <Code className="w-4 h-4" />
-              API
-            </Link>
-            <Link to="/declarations" className="text-foreground/80 hover:text-primary transition-colors">
-              Declarations
-            </Link>
-            <Link to="/contact" className="text-foreground/80 hover:text-primary transition-colors">
-              Contact
-            </Link>
             {isAdmin && (
               <Link to="/admin" className="text-primary hover:text-primary/80 transition-colors flex items-center gap-2">
                 <Shield className="w-4 h-4" />
@@ -116,9 +95,9 @@ const Navbar = () => {
                     <User className="w-4 h-4 mr-2" />
                     View Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate(`/profile/${user.id}`)}>
+                  <DropdownMenuItem onClick={() => navigate('/settings')}>
                     <Settings className="w-4 h-4 mr-2" />
-                    Edit Profile
+                    Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut} className="text-destructive">

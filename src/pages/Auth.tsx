@@ -32,7 +32,7 @@ export default function Auth() {
   const location = useLocation();
   const { toast } = useToast();
   
-  const from = (location.state as any)?.from?.pathname || '/';
+  const from = (location.state as any)?.from?.pathname || '/feed';
 
   useEffect(() => {
     if (user) {
@@ -54,7 +54,7 @@ export default function Auth() {
     setIsLoading(true);
     try {
       await signIn(data.email, data.password);
-      navigate(from, { replace: true });
+      navigate('/feed', { replace: true });
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -70,7 +70,7 @@ export default function Auth() {
     setIsLoading(true);
     try {
       await signUp(data.email, data.password, data.fullName);
-      navigate(from, { replace: true });
+      navigate('/feed', { replace: true });
     } catch (error: any) {
       toast({
         variant: "destructive",

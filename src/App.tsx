@@ -7,7 +7,9 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Index from "./pages/Index";
+import Landing from "./pages/Landing";
+import Feed from "./pages/Feed";
+import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
 import Realms from "./pages/Realms";
 import Scrolls from "./pages/Scrolls";
@@ -42,7 +44,13 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            {/* Landing - no navbar/footer */}
+            <Route path="/" element={<Landing />} />
+            
+            {/* Auth - no navbar/footer */}
             <Route path="/auth" element={<Auth />} />
+            
+            {/* Admin - protected with own layout */}
             <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
               <Route index element={<Dashboard />} />
               <Route path="scrolls" element={<ScrollsManagement />} />
@@ -52,12 +60,19 @@ const App = () => (
               <Route path="users" element={<UsersManagement />} />
               <Route path="comments" element={<CommentsManagement />} />
             </Route>
+            
+            {/* Main app routes - WITH navbar/footer */}
             <Route path="*" element={
               <div className="min-h-screen flex flex-col">
                 <Navbar />
                 <main className="flex-1 pt-20">
                   <Routes>
-                    <Route path="/" element={<Index />} />
+                    <Route path="/feed" element={<Feed />} />
+                    <Route path="/empire" element={<Empire />} />
+                    <Route path="/profile/:userId" element={<Profile />} />
+                    <Route path="/settings" element={<Settings />} />
+                    
+                    {/* Legacy routes - kept but not in navbar */}
                     <Route path="/realms" element={<Realms />} />
                     <Route path="/flameos" element={<FlameOS />} />
                     <Route path="/ghostos" element={<GhostOS />} />
@@ -69,8 +84,7 @@ const App = () => (
                     <Route path="/api-docs" element={<ApiDocs />} />
                     <Route path="/declarations" element={<Declarations />} />
                     <Route path="/contact" element={<Contact />} />
-                    <Route path="/empire" element={<Empire />} />
-                    <Route path="/profile/:userId" element={<Profile />} />
+                    
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </main>

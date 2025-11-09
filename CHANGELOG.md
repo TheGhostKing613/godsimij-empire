@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-11-09] - v1.3.0: Gate of Entry Update 🚪
+### Added
+- ✅ **Cinematic Landing Page** - Full-screen gate experience at `/` with animated entrance
+- ✅ **Ember Particle System** - 25 animated particles drifting upward on landing
+- ✅ **Pulsing NODE Sigil** - Animated Flame icon watermark on landing background
+- ✅ **Three Entry Pathways** - Sign In, Create Account, or Enter as Guest buttons
+- ✅ **Settings Page** - New `/settings` route for user preferences
+- ✅ **Audio Preferences** - Sound effect toggle and volume control in settings
+- ✅ **Notification Settings** - Email notification preferences panel
+- ✅ **Auto-Redirect Logic** - Authenticated users skip landing, go to feed
+- ✅ **Framer Motion Animations** - Staggered fade-ins, hover effects, entrance animations
+
+### Changed
+- 🔄 **Feed Route** - Social feed moved from `/` to `/feed`
+- 🔄 **Navbar Simplified** - Reduced to Feed, Empire, Profile, Settings (4 core sections)
+- 🔄 **Auth Redirect** - Now redirects to `/feed` instead of `/`
+- 🔄 **Logo Link** - Now points to `/feed` instead of `/`
+- 🔄 **User Dropdown** - Updated with View Profile and Settings options
+
+### Removed
+- ⛔ **From Navbar** - Realms, Scrolls, Media, Projects, AI, API, Declarations, Contact
+  - _Note: All pages still functional at original routes, just hidden from main nav_
+
+### Technical
+- 🔧 **New Components**: Landing.tsx, Settings.tsx
+- 🔧 **Renamed Files**: Index.tsx → Feed.tsx
+- 🔧 **Route Architecture**: Restructured App.tsx for cleaner separation
+- 🔧 **Animation Library**: Leveraged framer-motion for all entrance effects
+- 🔧 **Design System**: Maintained semantic tokens for all colors
+
+### Motto
+"Only those who dare to enter may bear the Flame."
+
 ## [2025-01-09] - Sprint 3: Broadcast Era Complete 🔥
 ### Added
 - ✅ **Public Broadcast Network** - Feed accessible to unauthenticated users (Wanderers)
