@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Flame, Shield, LogIn } from "lucide-react";
+import { Flame, Shield, LogIn, Code } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 
@@ -30,6 +30,10 @@ const Navbar = () => {
             </Link>
             <Link to="/ai" className="text-foreground/80 hover:text-secondary transition-colors">
               AI
+            </Link>
+            <Link to="/api-docs" className="text-foreground/80 hover:text-accent transition-colors flex items-center gap-1">
+              <Code className="w-4 h-4" />
+              API
             </Link>
             <Link to="/declarations" className="text-foreground/80 hover:text-primary transition-colors">
               Declarations
