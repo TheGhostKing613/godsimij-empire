@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-01-09] - Sprint 3: Broadcast Era Complete 🔥
+### Added
+- ✅ **Public Broadcast Network** - Feed accessible to unauthenticated users (Wanderers)
+- ✅ **Anonymous Posting** - Post with display names, hidden identity (3 per 24h limit)
+- ✅ **User Tier System** - Witness → Scribe → Flamekeeper → Crown with auto-promotion
+- ✅ **Multi-Reaction System** - 4 reaction types (🔥 Flame, ⚡ Rebel, 💡 Insight, 🤯 Mind Blown)
+- ✅ **Empire Integration** - Empire dropdown + dedicated /empire hub page
+- ✅ **Empire Broadcast Section** - Featured/pinned posts at top of feed
+- ✅ **Top of Flame Banner** - Trending posts with engagement algorithm
+- ✅ **Circuit Grid Animations** - Animated SVG patterns under posts
+- ✅ **Tier Badges** - Visual tier indicators with glow effects on avatars
+- ✅ **Audio System** - Sound effects for posts, reactions, navigation (with settings toggle)
+
+### Changed
+- 🔄 **Post Type Rebranding** - Discussion→Flamecast, Announcement→Signal, Idea→Dispatch, Question→Artifact
+- 🔄 **Post Cards** - Completely redesigned with color indicators, tier badges, anonymous support
+- 🔄 **Post Composer** - Added anonymous toggle with display name input
+- 🔄 **Navbar** - Added Empire dropdown with links to Empire properties
+- 🔄 **Home Page** - Public access, "Sign in to ignite" CTA for unauthenticated users
+- 🔄 **Reactions** - Replaced single like with multi-reaction picker
+
+### Technical
+- 🔧 **Database**: `anonymous_post_limits` table, `user_tier` enum, tier promotion triggers
+- 🔧 **Config Files**: postTypes, tiers, reactions configurations
+- 🔧 **New Components**: CircuitGrid, TierBadge, ReactionPicker, EmpireBroadcast, TopOfFlame
+- 🔧 **New Hooks**: useReactions, useAudio
+- 🔧 **New API**: reactions.ts with full CRUD
+- 🔧 **Design System**: Chart color tokens, Broadcast Era animations
+
 ## [2025-01-09] - Sprint 2: Social Feed Complete
 ### Added
 - ✅ **Social Feed** - Home page transformed into dynamic community feed

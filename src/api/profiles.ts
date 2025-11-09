@@ -15,7 +15,7 @@ export interface ProfileUpdateData {
 export const getProfileByUserId = async (userId: string) => {
   const { data, error } = await supabase
     .from('profiles')
-    .select('*')
+    .select('*, tier, tier_awarded_at')
     .eq('id', userId)
     .single();
 
@@ -108,7 +108,8 @@ export const getFollowers = async (userId: string) => {
         id,
         full_name,
         email,
-        avatar_url
+        avatar_url,
+        tier
       )
     `)
     .eq('following_id', userId);
@@ -126,7 +127,8 @@ export const getFollowing = async (userId: string) => {
         id,
         full_name,
         email,
-        avatar_url
+        avatar_url,
+        tier
       )
     `)
     .eq('follower_id', userId);

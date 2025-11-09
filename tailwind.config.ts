@@ -54,6 +54,13 @@ export default {
         cyan: "hsl(var(--secondary))",
         silver: "hsl(var(--accent))",
         void: "hsl(var(--void))",
+        chart: {
+          "1": "25 95% 53%",    // Ember Orange - Flamecast
+          "2": "195 100% 50%",  // Cyan - Signal
+          "3": "270 80% 60%",   // Purple - Dispatch
+          "4": "45 93% 47%",    // Gold - Artifact
+          "5": "142 76% 36%",   // Additional chart color
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

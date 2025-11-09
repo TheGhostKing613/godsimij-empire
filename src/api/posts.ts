@@ -23,7 +23,8 @@ export const createPost = async (userId: string, data: CreatePostData) => {
         id,
         full_name,
         email,
-        avatar_url
+        avatar_url,
+        tier
       ),
       categories (
         id,
@@ -48,7 +49,8 @@ export const getFeedPosts = async (userId?: string) => {
         id,
         full_name,
         email,
-        avatar_url
+        avatar_url,
+        tier
       ),
       categories (
         id,
@@ -91,7 +93,8 @@ export const getFollowingFeedPosts = async (userId: string) => {
         id,
         full_name,
         email,
-        avatar_url
+        avatar_url,
+        tier
       ),
       categories (
         id,
@@ -119,7 +122,8 @@ export const getPostsByCategory = async (categoryId: string) => {
         id,
         full_name,
         email,
-        avatar_url
+        avatar_url,
+        tier
       ),
       categories (
         id,
