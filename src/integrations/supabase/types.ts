@@ -19,8 +19,13 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          is_hidden: boolean
           item_id: string
           item_type: string
+          moderated_at: string | null
+          moderated_by: string | null
+          moderation_note: string | null
+          status: string
           updated_at: string
           user_email: string | null
           user_id: string | null
@@ -30,8 +35,13 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          is_hidden?: boolean
           item_id: string
           item_type: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_note?: string | null
+          status?: string
           updated_at?: string
           user_email?: string | null
           user_id?: string | null
@@ -41,8 +51,13 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          is_hidden?: boolean
           item_id?: string
           item_type?: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_note?: string | null
+          status?: string
           updated_at?: string
           user_email?: string | null
           user_id?: string | null

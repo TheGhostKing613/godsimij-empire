@@ -28,6 +28,7 @@ import ProjectsManagement from "./pages/admin/ProjectsManagement";
 import MediaManagement from "./pages/admin/MediaManagement";
 import FilesManagement from "./pages/admin/FilesManagement";
 import UsersManagement from "./pages/admin/UsersManagement";
+import CommentsManagement from "./pages/admin/CommentsManagement";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ const App = () => (
               <Route path="media" element={<MediaManagement />} />
               <Route path="files" element={<FilesManagement />} />
               <Route path="users" element={<UsersManagement />} />
+              <Route path="comments" element={<CommentsManagement />} />
             </Route>
             <Route path="*" element={
               <div className="min-h-screen flex flex-col">

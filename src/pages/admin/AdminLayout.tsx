@@ -9,7 +9,8 @@ import {
   Users,
   Files,
   LogOut,
-  Shield
+  Shield,
+  MessageSquare
 } from 'lucide-react';
 
 export default function AdminLayout() {
@@ -22,6 +23,7 @@ export default function AdminLayout() {
     { to: '/admin/media', label: 'Media', icon: Radio },
     { to: '/admin/files', label: 'Files', icon: Files },
     { to: '/admin/users', label: 'Users', icon: Users },
+    { to: '/admin/comments', label: 'Comments', icon: MessageSquare },
   ];
 
   return (
