@@ -12,10 +12,8 @@ import Feed from "./pages/Feed";
 import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
 import Realms from "./pages/Realms";
-import Scrolls from "./pages/Scrolls";
 import Media from "./pages/Media";
 import Projects from "./pages/Projects";
-import AI from "./pages/AI";
 import Empire from "./pages/Empire";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
@@ -26,7 +24,6 @@ import GhostOS from "./pages/realms/GhostOS";
 import WhisperNet from "./pages/realms/WhisperNet";
 import AdminLayout from "./pages/admin/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
-import ScrollsManagement from "./pages/admin/ScrollsManagement";
 import ProjectsManagement from "./pages/admin/ProjectsManagement";
 import MediaManagement from "./pages/admin/MediaManagement";
 import FilesManagement from "./pages/admin/FilesManagement";
@@ -52,7 +49,6 @@ const App = () => (
             {/* Admin - protected with own layout */}
             <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
               <Route index element={<Dashboard />} />
-              <Route path="scrolls" element={<ScrollsManagement />} />
               <Route path="projects" element={<ProjectsManagement />} />
               <Route path="media" element={<MediaManagement />} />
               <Route path="files" element={<FilesManagement />} />
@@ -78,10 +74,8 @@ const App = () => (
                     <Route path="/flameos" element={<FlameOS />} />
                     <Route path="/ghostos" element={<GhostOS />} />
                     <Route path="/whispernet" element={<WhisperNet />} />
-                    <Route path="/scrolls" element={<Scrolls />} />
                     <Route path="/media" element={<Media />} />
                     <Route path="/projects" element={<Projects />} />
-                    <Route path="/ai" element={<AI />} />
                     
                     <Route path="*" element={<NotFound />} />
                   </Routes>

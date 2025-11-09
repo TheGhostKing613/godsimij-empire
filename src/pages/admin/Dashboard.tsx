@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollText, FolderKanban, Radio, TrendingUp } from 'lucide-react';
+import { FolderKanban, Radio, TrendingUp } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
-    scrolls: 0,
     projects: 0,
     media: 0,
   });
@@ -18,14 +17,12 @@ export default function Dashboard() {
 
   const loadStats = async () => {
     try {
-      const [scrollsRes, projectsRes, mediaRes] = await Promise.all([
-        supabase.from('scrolls').select('id', { count: 'exact', head: true }),
+      const [projectsRes, mediaRes] = await Promise.all([
         supabase.from('projects').select('id', { count: 'exact', head: true }),
         supabase.from('media').select('id', { count: 'exact', head: true }),
       ]);
 
       setStats({
-        scrolls: scrollsRes.count || 0,
         projects: projectsRes.count || 0,
         media: mediaRes.count || 0,
       });
@@ -37,7 +34,6 @@ export default function Dashboard() {
   };
 
   const statCards = [
-    { label: 'Total Scrolls', value: stats.scrolls, icon: ScrollText, color: 'text-blue-500' },
     { label: 'Active Projects', value: stats.projects, icon: FolderKanban, color: 'text-green-500' },
     { label: 'Media Items', value: stats.media, icon: Radio, color: 'text-purple-500' },
   ];
@@ -49,7 +45,7 @@ export default function Dashboard() {
         <p className="text-muted-foreground">Manage your Empire's content and systems</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3 mb-8">
+      <div className="grid gap-6 md:grid-cols-2 mb-8">
         {statCards.map((stat) => (
           <Card key={stat.label}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -78,7 +74,7 @@ export default function Dashboard() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            Your Empire is growing. Use the sidebar to manage scrolls, projects, media, and users.
+            Your Empire is growing. Use the sidebar to manage projects, media, and users.
           </p>
         </CardContent>
       </Card>

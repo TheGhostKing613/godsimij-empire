@@ -3,7 +3,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { 
   LayoutDashboard, 
-  ScrollText, 
   FolderKanban, 
   Radio, 
   Users,
@@ -18,7 +17,6 @@ export default function AdminLayout() {
 
   const navItems = [
     { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
-    { to: '/admin/scrolls', label: 'Scrolls', icon: ScrollText },
     { to: '/admin/projects', label: 'Projects', icon: FolderKanban },
     { to: '/admin/media', label: 'Media', icon: Radio },
     { to: '/admin/files', label: 'Files', icon: Files },

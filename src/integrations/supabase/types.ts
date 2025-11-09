@@ -642,48 +642,6 @@ export type Database = {
         }
         Relationships: []
       }
-      scrolls: {
-        Row: {
-          content: string
-          created_at: string | null
-          created_by: string | null
-          description: string
-          file_url: string | null
-          id: string
-          pages: string | null
-          status: string
-          title: string
-          updated_at: string | null
-          updated_by: string | null
-        }
-        Insert: {
-          content: string
-          created_at?: string | null
-          created_by?: string | null
-          description: string
-          file_url?: string | null
-          id?: string
-          pages?: string | null
-          status?: string
-          title: string
-          updated_at?: string | null
-          updated_by?: string | null
-        }
-        Update: {
-          content?: string
-          created_at?: string | null
-          created_by?: string | null
-          description?: string
-          file_url?: string | null
-          id?: string
-          pages?: string | null
-          status?: string
-          title?: string
-          updated_at?: string | null
-          updated_by?: string | null
-        }
-        Relationships: []
-      }
       user_connections: {
         Row: {
           created_at: string | null
