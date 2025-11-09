@@ -25,6 +25,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import ScrollsManagement from "./pages/admin/ScrollsManagement";
 import ProjectsManagement from "./pages/admin/ProjectsManagement";
 import MediaManagement from "./pages/admin/MediaManagement";
+import FilesManagement from "./pages/admin/FilesManagement";
 import UsersManagement from "./pages/admin/UsersManagement";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="scrolls" element={<ScrollsManagement />} />
               <Route path="projects" element={<ProjectsManagement />} />
               <Route path="media" element={<MediaManagement />} />
+              <Route path="files" element={<FilesManagement />} />
               <Route path="users" element={<UsersManagement />} />
             </Route>
             <Route path="*" element={

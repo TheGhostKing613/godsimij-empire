@@ -7,6 +7,7 @@ import {
   FolderKanban, 
   Radio, 
   Users,
+  Files,
   LogOut,
   Shield
 } from 'lucide-react';
@@ -19,6 +20,7 @@ export default function AdminLayout() {
     { to: '/admin/scrolls', label: 'Scrolls', icon: ScrollText },
     { to: '/admin/projects', label: 'Projects', icon: FolderKanban },
     { to: '/admin/media', label: 'Media', icon: Radio },
+    { to: '/admin/files', label: 'Files', icon: Files },
     { to: '/admin/users', label: 'Users', icon: Users },
   ];
 
