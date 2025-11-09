@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
-import { Flame } from "lucide-react";
+import { Flame, Shield, LogIn } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
+  const { user, isAdmin } = useAuth();
+  
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/20">
       <div className="container mx-auto px-4 py-4">
@@ -33,6 +37,22 @@ const Navbar = () => {
             <Link to="/contact" className="text-foreground/80 hover:text-primary transition-colors">
               Contact
             </Link>
+            {isAdmin && (
+              <Link to="/admin" className="text-primary hover:text-primary/80 transition-colors flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                Admin
+              </Link>
+            )}
+            {!user ? (
+              <Link to="/auth">
+                <Button variant="outline" size="sm">
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Sign In
+                </Button>
+              </Link>
+            ) : (
+              <span className="text-sm text-muted-foreground">{user.email?.split('@')[0]}</span>
+            )}
           </div>
         </div>
       </div>
