@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Flame, Shield, User, Settings, LogOut, Home, Search, Menu, Sparkles, Scroll, Image, Briefcase, Compass } from "lucide-react";
+import { Flame, Shield, User, Settings, LogOut, Home, Search, Menu, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,10 +56,6 @@ const Navbar = () => {
             {user && (
               <NavButton to={`/profile/${user.id}`} icon={User} label="Profile" active={isActive('/profile')} />
             )}
-            <NavButton to="/realms" icon={Compass} label="Realms" active={isActive('/realms')} />
-            <NavButton to="/projects" icon={Briefcase} label="Projects" active={isActive('/projects')} />
-            <NavButton to="/scrolls" icon={Scroll} label="Scrolls" active={isActive('/scrolls')} />
-            <NavButton to="/media" icon={Image} label="Media" active={isActive('/media')} />
             <NavButton to="/ai" icon={Sparkles} label="AI" active={isActive('/ai')} />
           </div>
 
@@ -175,22 +171,6 @@ const Navbar = () => {
                     Profile
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem onClick={() => navigate('/realms')}>
-                  <Compass className="w-4 h-4 mr-2" />
-                  Realms
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/projects')}>
-                  <Briefcase className="w-4 h-4 mr-2" />
-                  Projects
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/scrolls')}>
-                  <Scroll className="w-4 h-4 mr-2" />
-                  Scrolls
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/media')}>
-                  <Image className="w-4 h-4 mr-2" />
-                  Media
-                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate('/ai')}>
                   <Sparkles className="w-4 h-4 mr-2" />
                   AI
