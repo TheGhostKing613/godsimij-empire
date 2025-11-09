@@ -6,12 +6,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 const Scrolls = () => {
   const [scrolls, setScrolls] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedScroll, setSelectedScroll] = useState<any>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
+  
+  const itemsPerPage = 6;
+  const totalPages = Math.ceil(scrolls.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentScrolls = scrolls.slice(startIndex, endIndex);
 
   useEffect(() => {
     loadScrolls();
@@ -64,32 +72,66 @@ const Scrolls = () => {
             <p className="text-muted-foreground">No published scrolls yet. Check back soon!</p>
           </div>
         ) : (
-          <div className="space-y-6">
-            {scrolls.map((scroll) => (
-              <ScrollCard
-                key={scroll.id}
-                title={scroll.title}
-                description={scroll.description}
-                pages={scroll.pages}
-                status={scroll.status}
-                onRead={() => setSelectedScroll(scroll)}
-                onDownload={() => {
-                  if (scroll.file_url) {
-                    window.open(scroll.file_url, '_blank');
-                    toast({
-                      title: "Download Started",
-                      description: `Downloading ${scroll.title}...`,
-                    });
-                  } else {
-                    toast({
-                      title: "No file available",
-                      description: "This scroll doesn't have a downloadable file.",
-                    });
-                  }
-                }}
-              />
-            ))}
-          </div>
+          <>
+            <div className="space-y-6">
+              {currentScrolls.map((scroll) => (
+                <ScrollCard
+                  key={scroll.id}
+                  title={scroll.title}
+                  description={scroll.description}
+                  pages={scroll.pages}
+                  status={scroll.status}
+                  onRead={() => setSelectedScroll(scroll)}
+                  onDownload={() => {
+                    if (scroll.file_url) {
+                      window.open(scroll.file_url, '_blank');
+                      toast({
+                        title: "Download Started",
+                        description: `Downloading ${scroll.title}...`,
+                      });
+                    } else {
+                      toast({
+                        title: "No file available",
+                        description: "This scroll doesn't have a downloadable file.",
+                      });
+                    }
+                  }}
+                />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="mt-8">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(page)}
+                          isActive={currentPage === page}
+                          className="cursor-pointer"
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </>
         )}
 
         <div className="mt-12 bg-card/30 border border-primary/20 rounded-lg p-8 text-center">

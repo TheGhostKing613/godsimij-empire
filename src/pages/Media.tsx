@@ -6,11 +6,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Radio, Podcast, Film, MessageSquare, FileText, Music, Video, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 const Media = () => {
   const [mediaItems, setMediaItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
+
+  const itemsPerPage = 12;
+  const totalPages = Math.ceil(mediaItems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentMediaItems = mediaItems.slice(startIndex, endIndex);
 
   useEffect(() => {
     loadMedia();
@@ -96,10 +104,10 @@ const Media = () => {
         ) : (
           <>
             {/* Featured Content */}
-            {mediaItems.some(item => item.type === 'podcast' || item.type === 'video') && (
+            {currentMediaItems.some(item => item.type === 'podcast' || item.type === 'video') && (
               <div className="mb-12 bg-gradient-to-r from-secondary/20 to-primary/20 border border-secondary/30 rounded-lg p-8">
                 {(() => {
-                  const featured = mediaItems.find(item => item.type === 'podcast' || item.type === 'video');
+                  const featured = currentMediaItems.find(item => item.type === 'podcast' || item.type === 'video');
                   return featured ? (
                     <>
                       <div className="flex items-center gap-3 mb-4">
@@ -128,14 +136,14 @@ const Media = () => {
             )}
 
             {/* Blog Posts */}
-            {mediaItems.some(item => item.type === 'blog') && (
+            {currentMediaItems.some(item => item.type === 'blog') && (
               <div className="mb-12">
                 <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
                   <MessageSquare className="w-8 h-8 text-primary" />
                   Latest Posts
                 </h2>
                 <div className="space-y-6">
-                  {mediaItems.filter(item => item.type === 'blog').map((post) => (
+                  {currentMediaItems.filter(item => item.type === 'blog').map((post) => (
                     <Card key={post.id} className="bg-card/50 border-secondary/20 hover:border-secondary/60 transition-all">
                       {post.file_url && (
                         <div className="aspect-video w-full overflow-hidden rounded-t-lg">
@@ -179,14 +187,14 @@ const Media = () => {
             )}
 
             {/* Video Section */}
-            {mediaItems.some(item => item.type === 'meme' || item.type === 'video') && (
+            {currentMediaItems.some(item => item.type === 'meme' || item.type === 'video') && (
               <div>
                 <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
                   <Film className="w-8 h-8 text-primary" />
                   Memes & Videos
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {mediaItems.filter(item => item.type === 'meme' || item.type === 'video').map((item) => (
+                  {currentMediaItems.filter(item => item.type === 'meme' || item.type === 'video').map((item) => (
                     <Card key={item.id} className="bg-card/50 border-primary/20 overflow-hidden group hover:border-primary/40 transition-colors">
                       {item.file_url ? (
                         <div className="aspect-square bg-muted overflow-hidden">
@@ -214,6 +222,38 @@ const Media = () => {
                     </Card>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {totalPages > 1 && (
+              <div className="mt-12">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(page)}
+                          isActive={currentPage === page}
+                          className="cursor-pointer"
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
               </div>
             )}
           </>
