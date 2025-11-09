@@ -1,10 +1,41 @@
 import { useState } from "react";
 import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { mockCompanions } from "@/api/mock-data";
 import AiCompanion from "@/components/AiCompanion";
 import AiChatDialog from "@/components/AiChatDialog";
 import { motion } from "framer-motion";
+
+// Mock data inline since we removed mock-data.ts
+const mockCompanions = [
+  {
+    id: "atlas",
+    name: "Atlas",
+    role: "Strategic Architect",
+    description: "Master of system design and large-scale planning",
+    specialty: "Infrastructure & Architecture",
+  },
+  {
+    id: "cipher",
+    name: "Cipher",
+    role: "Security Oracle",
+    description: "Expert in cryptography and digital sovereignty",
+    specialty: "Cybersecurity & Privacy",
+  },
+  {
+    id: "nova",
+    name: "Nova",
+    role: "Innovation Catalyst",
+    description: "Drives creative solutions and breakthrough thinking",
+    specialty: "R&D & Experimentation",
+  },
+  {
+    id: "echo",
+    name: "Echo",
+    role: "Communication Specialist",
+    description: "Ensures clarity and connection across all channels",
+    specialty: "Content & Community",
+  },
+];
 
 const AI = () => {
   const [activeCompanion, setActiveCompanion] = useState<string | null>(null);

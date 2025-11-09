@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { MessageSquare, Share2 } from 'lucide-react';
@@ -10,6 +11,7 @@ import { UserTier } from '@/config/tiers';
 import TierBadge from './TierBadge';
 import ReactionPicker from './ReactionPicker';
 import CircuitGrid from './CircuitGrid';
+import { PostCommentsSection } from './PostCommentsSection';
 import { usePostReactions, useUserReaction, useReactToPost } from '@/hooks/useReactions';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
@@ -20,6 +22,7 @@ interface PostCardProps {
 
 export function PostCard({ post }: PostCardProps) {
   const { user } = useAuth();
+  const [showComments, setShowComments] = useState(false);
   const postType = post.post_type as PostType;
   const config = POST_TYPE_CONFIG[postType] || POST_TYPE_CONFIG.discussion;
   
@@ -124,7 +127,12 @@ export function PostCard({ post }: PostCardProps) {
           disabled={!user}
         />
 
-        <Button variant="ghost" size="sm" className="gap-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-2"
+          onClick={() => setShowComments(!showComments)}
+        >
           <MessageSquare className="w-4 h-4" />
           <span>{post.comments_count || 0}</span>
         </Button>
@@ -134,6 +142,13 @@ export function PostCard({ post }: PostCardProps) {
           <span>{post.shares_count || 0}</span>
         </Button>
       </div>
+
+      {/* Comments Section */}
+      <PostCommentsSection
+        postId={post.id}
+        postOwnerId={post.user_id}
+        isExpanded={showComments}
+      />
     </Card>
   );
 }

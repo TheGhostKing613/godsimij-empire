@@ -17,9 +17,7 @@ import Media from "./pages/Media";
 import Projects from "./pages/Projects";
 import AI from "./pages/AI";
 import Empire from "./pages/Empire";
-import ApiDocs from "./pages/ApiDocs";
-import Declarations from "./pages/Declarations";
-import Contact from "./pages/Contact";
+import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
@@ -73,8 +71,9 @@ const App = () => (
                     <Route path="/profile/:userId" element={<Profile />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/settings" element={<Settings />} />
+                    <Route path="/search" element={<Search />} />
                     
-                    {/* Legacy routes - kept but not in navbar */}
+                    {/* Legacy routes - kept but hidden from navbar */}
                     <Route path="/realms" element={<Realms />} />
                     <Route path="/flameos" element={<FlameOS />} />
                     <Route path="/ghostos" element={<GhostOS />} />
@@ -83,9 +82,6 @@ const App = () => (
                     <Route path="/media" element={<Media />} />
                     <Route path="/projects" element={<Projects />} />
                     <Route path="/ai" element={<AI />} />
-                    <Route path="/api-docs" element={<ApiDocs />} />
-                    <Route path="/declarations" element={<Declarations />} />
-                    <Route path="/contact" element={<Contact />} />
                     
                     <Route path="*" element={<NotFound />} />
                   </Routes>

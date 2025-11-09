@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import TierBadge from '@/components/TierBadge';
 import { MessageButton } from './MessageButton';
+import { FollowersModal } from '@/components/FollowersModal';
+import { FollowingModal } from '@/components/FollowingModal';
 
 interface ProfileHeaderProps {
   profile: {
@@ -31,8 +34,22 @@ export function ProfileHeader({
   onFollowClick,
   onEditClick,
 }: ProfileHeaderProps) {
+  const [showFollowersModal, setShowFollowersModal] = useState(false);
+  const [showFollowingModal, setShowFollowingModal] = useState(false);
+
   return (
-    <Card className="p-6 -mt-20 relative z-10">
+    <>
+      <FollowersModal
+        userId={profile.id}
+        isOpen={showFollowersModal}
+        onClose={() => setShowFollowersModal(false)}
+      />
+      <FollowingModal
+        userId={profile.id}
+        isOpen={showFollowingModal}
+        onClose={() => setShowFollowingModal(false)}
+      />
+      <Card className="p-6 -mt-20 relative z-10">
       <div className="flex flex-col md:flex-row items-start md:items-end gap-6">
         {/* Avatar with white border */}
         <Avatar className="w-40 h-40 border-4 border-background shadow-xl">
@@ -58,14 +75,20 @@ export function ProfileHeader({
 
           {/* Stats inline */}
           <div className="flex gap-6 text-sm">
+            <button
+              onClick={() => setShowFollowersModal(true)}
+              className="hover:underline cursor-pointer"
+            >
+              <b className="font-bold">{profile.follower_count || 0}</b> followers
+            </button>
+            <button
+              onClick={() => setShowFollowingModal(true)}
+              className="hover:underline cursor-pointer"
+            >
+              <b className="font-bold">{profile.following_count || 0}</b> following
+            </button>
             <span>
               <b className="font-bold">{profile.post_count || 0}</b> posts
-            </span>
-            <span>
-              <b className="font-bold">{profile.follower_count || 0}</b> followers
-            </span>
-            <span>
-              <b className="font-bold">{profile.following_count || 0}</b> following
             </span>
           </div>
         </div>
@@ -89,5 +112,6 @@ export function ProfileHeader({
         </div>
       </div>
     </Card>
+    </>
   );
 }
