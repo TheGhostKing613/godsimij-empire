@@ -22,6 +22,7 @@ import Declarations from "./pages/Declarations";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
+import Notifications from "./pages/Notifications";
 import FlameOS from "./pages/realms/FlameOS";
 import GhostOS from "./pages/realms/GhostOS";
 import WhisperNet from "./pages/realms/WhisperNet";
@@ -70,6 +71,7 @@ const App = () => (
                     <Route path="/feed" element={<Feed />} />
                     <Route path="/empire" element={<Empire />} />
                     <Route path="/profile/:userId" element={<Profile />} />
+                    <Route path="/notifications" element={<Notifications />} />
                     <Route path="/settings" element={<Settings />} />
                     
                     {/* Legacy routes - kept but not in navbar */}

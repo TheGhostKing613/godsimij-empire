@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Flame, Shield, LogIn, User, Settings, LogOut, Home, Bell, Search, MessageCircle, Menu, Sparkles, Scroll, Image, Briefcase, Compass } from "lucide-react";
+import { Flame, Shield, LogIn, User, Settings, LogOut, Home, Search, MessageCircle, Menu, Sparkles, Scroll, Image, Briefcase, Compass } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { NotificationsDropdown } from "@/components/NotificationsDropdown";
 
 const Navbar = () => {
   const { user, isAdmin, signOut } = useAuth();
@@ -70,11 +71,8 @@ const Navbar = () => {
                   <Search className="w-5 h-5" />
                 </Button>
 
-                {/* Notifications Icon */}
-                <Button variant="ghost" size="icon" className="rounded-full relative">
-                  <Bell className="w-5 h-5" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
-                </Button>
+                {/* Notifications Dropdown */}
+                <NotificationsDropdown />
 
                 {/* Messages Icon */}
                 <Button variant="ghost" size="icon" className="rounded-full">

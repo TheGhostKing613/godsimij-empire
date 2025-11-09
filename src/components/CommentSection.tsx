@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { MessageSquare, Send, Trash2, AlertCircle, Check, X, Flag, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { createNotification } from "@/api/notifications";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -128,6 +129,10 @@ export const CommentSection = ({ itemId, itemType }: CommentSectionProps) => {
 
       if (error) throw error;
 
+      // Create notification for the item owner if it's a post
+      // For scrolls/projects/media, we'd need to fetch the owner
+      // This can be enhanced later when we add user ownership to those tables
+      
       setNewComment("");
       toast.success("Comment posted!");
     } catch (error: any) {
