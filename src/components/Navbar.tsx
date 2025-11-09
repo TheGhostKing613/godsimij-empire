@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
-import { Flame, Shield, LogIn, Code, User, Settings, LogOut } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Flame, Shield, LogIn, User, Settings, LogOut, Home, Bell, Search, MessageCircle, Menu, Sparkles, Scroll, Image, Briefcase, Compass } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,103 +10,203 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 const Navbar = () => {
   const { user, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path);
+
+  const NavButton = ({ to, icon: Icon, label, active }: { to: string; icon: any; label: string; active?: boolean }) => (
+    <Link to={to}>
+      <Button
+        variant="ghost"
+        size="sm"
+        className={cn(
+          "flex flex-col items-center gap-1 h-auto py-2 px-4 hover:bg-muted relative",
+          active && "text-primary"
+        )}
+      >
+        <Icon className="w-5 h-5" />
+        <span className="text-xs font-medium">{label}</span>
+        {active && (
+          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full" />
+        )}
+      </Button>
+    </Link>
+  );
   
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/20">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex items-center justify-between h-14">
+          {/* Logo */}
           <Link to="/feed" className="flex items-center gap-2 group">
-            <Flame className="w-8 h-8 text-primary animate-pulse-glow" />
-            <span className="text-xl font-bold text-glow-ember">GodsIMiJ Empire</span>
+            <Flame className="w-7 h-7 text-primary" />
+            <span className="text-lg font-bold hidden sm:inline">GodsIMiJ</span>
           </Link>
           
-          <div className="hidden md:flex items-center gap-6">
-            <Link to="/feed" className="text-foreground/80 hover:text-primary transition-colors flex items-center gap-2">
-              <Flame className="w-4 h-4" />
-              Feed
-            </Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-foreground/80 hover:text-primary transition-colors px-2">
-                  Empire
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="center" className="w-56">
-                <DropdownMenuItem asChild>
-                  <a href="https://thewitnesshall.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                    <span>🏛️</span>
-                    <span>Witness Hall</span>
-                  </a>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <a href="https://quantum-odyssey.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                    <span>⚡</span>
-                    <span>Quantum Odyssey</span>
-                  </a>
-                </DropdownMenuItem>
-                <DropdownMenuItem disabled className="flex items-center gap-2">
-                  <span>📻</span>
-                  <span>Rebel Media</span>
-                  <span className="text-xs text-muted-foreground">(Soon)</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem disabled className="flex items-center gap-2">
-                  <span>🕸️</span>
-                  <span>GhostVault</span>
-                  <span className="text-xs text-muted-foreground">(Soon)</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/empire')}>
-                  View All Empire Properties
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            {isAdmin && (
-              <Link to="/admin" className="text-primary hover:text-primary/80 transition-colors flex items-center gap-2">
-                <Shield className="w-4 h-4" />
-                Admin
-              </Link>
+          {/* Center Navigation - Desktop */}
+          <div className="hidden md:flex items-center gap-1">
+            <NavButton to="/feed" icon={Home} label="Feed" active={isActive('/feed')} />
+            {user && (
+              <NavButton to={`/profile/${user.id}`} icon={User} label="Profile" active={isActive('/profile')} />
             )}
-            {!user ? (
+            <NavButton to="/realms" icon={Compass} label="Realms" active={isActive('/realms')} />
+            <NavButton to="/projects" icon={Briefcase} label="Projects" active={isActive('/projects')} />
+            <NavButton to="/scrolls" icon={Scroll} label="Scrolls" active={isActive('/scrolls')} />
+            <NavButton to="/media" icon={Image} label="Media" active={isActive('/media')} />
+            <NavButton to="/ai" icon={Sparkles} label="AI" active={isActive('/ai')} />
+          </div>
+
+          {/* Right Side - Actions */}
+          <div className="flex items-center gap-2">
+            {user ? (
+              <>
+                {/* Search Icon */}
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <Search className="w-5 h-5" />
+                </Button>
+
+                {/* Notifications Icon */}
+                <Button variant="ghost" size="icon" className="rounded-full relative">
+                  <Bell className="w-5 h-5" />
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
+                </Button>
+
+                {/* Messages Icon */}
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <MessageCircle className="w-5 h-5" />
+                </Button>
+
+                {/* Empire Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="rounded-full">
+                      <Menu className="w-5 h-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem asChild>
+                      <a href="https://thewitnesshall.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                        <span>🏛️</span>
+                        <span>Witness Hall</span>
+                      </a>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a href="https://quantum-odyssey.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                        <span>⚡</span>
+                        <span>Quantum Odyssey</span>
+                      </a>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled className="flex items-center gap-2">
+                      <span>📻</span>
+                      <span>Rebel Media</span>
+                      <span className="text-xs text-muted-foreground">(Soon)</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled className="flex items-center gap-2">
+                      <span>🕸️</span>
+                      <span>GhostVault</span>
+                      <span className="text-xs text-muted-foreground">(Soon)</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate('/empire')}>
+                      View All Empire Properties
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* User Avatar Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="rounded-full">
+                      <Avatar className="w-8 h-8">
+                        <AvatarImage src={user.user_metadata?.avatar_url} />
+                        <AvatarFallback className="text-xs bg-primary/10">
+                          {user.email?.[0]?.toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem onClick={() => navigate(`/profile/${user.id}`)}>
+                      <User className="w-4 h-4 mr-2" />
+                      View Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/settings')}>
+                      <Settings className="w-4 h-4 mr-2" />
+                      Settings
+                    </DropdownMenuItem>
+                    {isAdmin && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => navigate('/admin')}>
+                          <Shield className="w-4 h-4 mr-2" />
+                          Admin Dashboard
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={signOut} className="text-destructive">
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
               <Link to="/auth">
-                <Button variant="outline" size="sm">
+                <Button size="sm">
                   <LogIn className="w-4 h-4 mr-2" />
                   Sign In
                 </Button>
               </Link>
-            ) : (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="gap-2">
-                    <Avatar className="w-7 h-7">
-                      <AvatarImage src={user.user_metadata?.avatar_url} />
-                      <AvatarFallback className="text-xs bg-primary/10">
-                        {user.email?.[0]?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="hidden sm:inline">{user.email?.split('@')[0]}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+            )}
+          </div>
+
+          {/* Mobile Menu */}
+          <div className="md:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="w-5 h-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem onClick={() => navigate('/feed')}>
+                  <Home className="w-4 h-4 mr-2" />
+                  Feed
+                </DropdownMenuItem>
+                {user && (
                   <DropdownMenuItem onClick={() => navigate(`/profile/${user.id}`)}>
                     <User className="w-4 h-4 mr-2" />
-                    View Profile
+                    Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/settings')}>
-                    <Settings className="w-4 h-4 mr-2" />
-                    Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut} className="text-destructive">
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+                )}
+                <DropdownMenuItem onClick={() => navigate('/realms')}>
+                  <Compass className="w-4 h-4 mr-2" />
+                  Realms
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/projects')}>
+                  <Briefcase className="w-4 h-4 mr-2" />
+                  Projects
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/scrolls')}>
+                  <Scroll className="w-4 h-4 mr-2" />
+                  Scrolls
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/media')}>
+                  <Image className="w-4 h-4 mr-2" />
+                  Media
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/ai')}>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  AI
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
