@@ -18,6 +18,7 @@ import ApiDocs from "./pages/ApiDocs";
 import Declarations from "./pages/Declarations";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
 import FlameOS from "./pages/realms/FlameOS";
 import GhostOS from "./pages/realms/GhostOS";
 import WhisperNet from "./pages/realms/WhisperNet";
@@ -67,6 +68,7 @@ const App = () => (
                     <Route path="/api-docs" element={<ApiDocs />} />
                     <Route path="/declarations" element={<Declarations />} />
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/profile/:userId" element={<Profile />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </main>
