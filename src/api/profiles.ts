@@ -136,3 +136,76 @@ export const getFollowing = async (userId: string) => {
   if (error) throw error;
   return data;
 };
+
+export const getSuggestedUsers = async (currentUserId?: string, limit = 5) => {
+  let query = supabase
+    .from('profiles')
+    .select('id, full_name, email, avatar_url, tier, follower_count')
+    .order('follower_count', { ascending: false })
+    .limit(limit * 2); // Get more to filter out following
+  
+  if (currentUserId) {
+    query = query.neq('id', currentUserId);
+  }
+  
+  const { data: profiles, error } = await query;
+  if (error) throw error;
+  
+  if (!currentUserId) {
+    return profiles?.slice(0, limit) || [];
+  }
+  
+  // Get users already following
+  const { data: following } = await supabase
+    .from('user_connections')
+    .select('following_id')
+    .eq('follower_id', currentUserId);
+  
+  const followingIds = following?.map(f => f.following_id) || [];
+  
+  // Filter out already following
+  const filtered = profiles?.filter(p => !followingIds.includes(p.id)) || [];
+  return filtered.slice(0, limit);
+};
+
+export const getUserTierProgress = async (userId: string) => {
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('tier, post_count')
+    .eq('id', userId)
+    .single();
+  
+  if (profileError) throw profileError;
+  
+  // Get reactions received count
+  const { data: posts } = await supabase
+    .from('posts')
+    .select('id')
+    .eq('user_id', userId);
+  
+  const postIds = posts?.map(p => p.id) || [];
+  
+  let reactionsCount = 0;
+  if (postIds.length > 0) {
+    const { count } = await supabase
+      .from('post_likes')
+      .select('*', { count: 'exact', head: true })
+      .in('post_id', postIds);
+    
+    reactionsCount = count || 0;
+  }
+  
+  const progress = {
+    currentTier: profile.tier,
+    posts: profile.post_count,
+    postsNeeded: 10,
+    reactions: reactionsCount,
+    reactionsNeeded: 50,
+    percentComplete: Math.min(
+      ((profile.post_count / 10) + (reactionsCount / 50)) / 2 * 100,
+      100
+    ),
+  };
+  
+  return progress;
+};

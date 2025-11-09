@@ -1,5 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { createPost, getFeedPosts, getFollowingFeedPosts, getPostsByCategory, CreatePostData } from '@/api/posts';
+import { 
+  createPost, 
+  getFeedPosts, 
+  getFollowingFeedPosts, 
+  getPostsByCategory, 
+  getPostsByUser,
+  getLikedPostsByUser,
+  getTrendingCategories,
+  CreatePostData 
+} from '@/api/posts';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -22,6 +31,30 @@ export const useCategoryPosts = (categoryId: string) => {
     queryKey: ['posts', 'category', categoryId],
     queryFn: () => getPostsByCategory(categoryId),
     enabled: !!categoryId,
+  });
+};
+
+export const useUserPosts = (userId: string) => {
+  return useQuery({
+    queryKey: ['posts', 'user', userId],
+    queryFn: () => getPostsByUser(userId),
+    enabled: !!userId,
+  });
+};
+
+export const useUserLikedPosts = (userId: string) => {
+  return useQuery({
+    queryKey: ['posts', 'liked', userId],
+    queryFn: () => getLikedPostsByUser(userId),
+    enabled: !!userId,
+  });
+};
+
+export const useTrendingCategories = (limit = 5) => {
+  return useQuery({
+    queryKey: ['categories', 'trending', limit],
+    queryFn: () => getTrendingCategories(limit),
+    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 };
 

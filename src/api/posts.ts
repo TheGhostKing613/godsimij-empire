@@ -162,3 +162,88 @@ export const checkAnonymousPostLimit = async (userId: string): Promise<boolean> 
   if (error) throw error;
   return (data?.length || 0) < 3;
 };
+
+export const getPostsByUser = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('posts')
+    .select(`
+      *,
+      profiles:user_id (
+        id,
+        full_name,
+        email,
+        avatar_url,
+        tier
+      ),
+      categories (
+        id,
+        name,
+        slug,
+        icon,
+        color
+      )
+    `)
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  return data;
+};
+
+export const getLikedPostsByUser = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('post_likes')
+    .select(`
+      post_id,
+      posts (
+        *,
+        profiles:user_id (
+          id,
+          full_name,
+          email,
+          avatar_url,
+          tier
+        ),
+        categories (
+          id,
+          name,
+          slug,
+          icon,
+          color
+        )
+      )
+    `)
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  return data.map(like => like.posts).filter(Boolean);
+};
+
+export const getTrendingCategories = async (limit = 5) => {
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  
+  const { data, error } = await supabase
+    .from('posts')
+    .select('category_id, categories(id, name, icon, color, slug)')
+    .gte('created_at', sevenDaysAgo)
+    .not('category_id', 'is', null);
+  
+  if (error) throw error;
+  
+  // Count posts per category
+  const categoryCounts = data.reduce((acc: any, post: any) => {
+    const catId = post.category_id;
+    if (!acc[catId] && post.categories) {
+      acc[catId] = { ...post.categories, count: 0 };
+    }
+    if (acc[catId]) {
+      acc[catId].count++;
+    }
+    return acc;
+  }, {});
+  
+  return Object.values(categoryCounts)
+    .sort((a: any, b: any) => b.count - a.count)
+    .slice(0, limit);
+};
