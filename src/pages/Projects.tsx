@@ -9,11 +9,15 @@ import { useToast } from "@/hooks/use-toast";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { SeoHead } from "@/components/SeoHead";
 import { SocialShare } from "@/components/SocialShare";
+import { CommentSection } from "@/components/CommentSection";
+import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const Projects = () => {
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
   const { toast } = useToast();
 
   const itemsPerPage = 9;
@@ -128,26 +132,27 @@ const Projects = () => {
                     <CardDescription>{project.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {project.link ? (
-                      <Button 
-                        variant="outline" 
-                        className="w-full border-secondary/30 group-hover:border-secondary/60"
-                        asChild
-                      >
-                        <a href={project.link} target="_blank" rel="noopener noreferrer">
-                          Launch App
-                          <ExternalLink className="w-4 h-4 ml-2" />
-                        </a>
-                      </Button>
-                    ) : (
-                      <Button 
-                        variant="outline" 
+                    <div className="space-y-2">
+                      {project.link && (
+                        <Button 
+                          variant="outline" 
+                          className="w-full border-secondary/30 group-hover:border-secondary/60"
+                          asChild
+                        >
+                          <a href={project.link} target="_blank" rel="noopener noreferrer">
+                            Launch App
+                            <ExternalLink className="w-4 h-4 ml-2" />
+                          </a>
+                        </Button>
+                      )}
+                      <Button
+                        variant="secondary"
                         className="w-full"
-                        disabled
+                        onClick={() => setSelectedProject(project)}
                       >
-                        Coming Soon
+                        View Details & Comments
                       </Button>
-                    )}
+                    </div>
                   </CardContent>
                 </Card>
               ))}
@@ -196,6 +201,61 @@ const Projects = () => {
           </p>
         </div>
       </div>
+
+      {/* Project Details Dialog */}
+      <Dialog open={!!selectedProject} onOpenChange={() => setSelectedProject(null)}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          {selectedProject && (
+            <>
+              <DialogHeader>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <DialogTitle className="text-2xl">{selectedProject.name}</DialogTitle>
+                    <DialogDescription>{selectedProject.description}</DialogDescription>
+                  </div>
+                  <SocialShare
+                    url={`${window.location.origin}/projects#${selectedProject.id}`}
+                    title={selectedProject.name}
+                    description={selectedProject.description}
+                  />
+                </div>
+              </DialogHeader>
+
+              {selectedProject.image_url && (
+                <div className="aspect-video w-full overflow-hidden rounded-lg">
+                  <img
+                    src={selectedProject.image_url}
+                    alt={selectedProject.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div className="flex gap-2">
+                  <Badge variant="outline">{selectedProject.status}</Badge>
+                  {selectedProject.category && (
+                    <Badge variant="secondary">{selectedProject.category}</Badge>
+                  )}
+                </div>
+
+                {selectedProject.link && (
+                  <Button variant="outline" className="w-full" asChild>
+                    <a href={selectedProject.link} target="_blank" rel="noopener noreferrer">
+                      Launch App
+                      <ExternalLink className="w-4 h-4 ml-2" />
+                    </a>
+                  </Button>
+                )}
+              </div>
+
+              <Separator className="my-6" />
+
+              <CommentSection itemId={selectedProject.id} itemType="project" />
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

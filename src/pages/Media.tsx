@@ -3,17 +3,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Radio, Podcast, Film, MessageSquare, FileText, Music, Video, Image as ImageIcon } from "lucide-react";
+import { Radio, Podcast, Film, MessageSquare, FileText, Music, Video, Image as ImageIcon, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { SeoHead } from "@/components/SeoHead";
 import { SocialShare } from "@/components/SocialShare";
+import { CommentSection } from "@/components/CommentSection";
+import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const Media = () => {
   const [mediaItems, setMediaItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const { toast } = useToast();
 
   const itemsPerPage = 12;
@@ -184,13 +188,22 @@ const Media = () => {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        {post.embed_url && (
-                          <Button variant="outline" className="border-secondary/30" asChild>
-                            <a href={post.embed_url} target="_blank" rel="noopener noreferrer">
-                              Read More
-                            </a>
+                        <div className="flex gap-2">
+                          {post.embed_url && (
+                            <Button variant="outline" className="border-secondary/30 flex-1" asChild>
+                              <a href={post.embed_url} target="_blank" rel="noopener noreferrer">
+                                Read More
+                              </a>
+                            </Button>
+                          )}
+                          <Button
+                            variant="secondary"
+                            className="flex-1"
+                            onClick={() => setSelectedMedia(post)}
+                          >
+                            Comments
                           </Button>
-                        )}
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
@@ -223,13 +236,23 @@ const Media = () => {
                       )}
                       <CardContent className="p-4">
                         <h3 className="font-medium text-sm mb-2 line-clamp-2">{item.title}</h3>
-                        {(item.embed_url || item.file_url) && (
-                          <Button variant="ghost" size="sm" className="w-full" asChild>
-                            <a href={item.embed_url || item.file_url} target="_blank" rel="noopener noreferrer">
-                              View
-                            </a>
+                        <div className="space-y-2">
+                          {(item.embed_url || item.file_url) && (
+                            <Button variant="ghost" size="sm" className="w-full" asChild>
+                              <a href={item.embed_url || item.file_url} target="_blank" rel="noopener noreferrer">
+                                View
+                              </a>
+                            </Button>
+                          )}
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            className="w-full"
+                            onClick={() => setSelectedMedia(item)}
+                          >
+                            Comments
                           </Button>
-                        )}
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
@@ -271,6 +294,63 @@ const Media = () => {
           </>
         )}
       </div>
+
+      {/* Media Details Dialog */}
+      <Dialog open={!!selectedMedia} onOpenChange={() => setSelectedMedia(null)}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          {selectedMedia && (
+            <>
+              <DialogHeader>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <DialogTitle className="text-2xl">{selectedMedia.title}</DialogTitle>
+                    <DialogDescription>
+                      {selectedMedia.author && `by ${selectedMedia.author} • `}
+                      {new Date(selectedMedia.date).toLocaleDateString()}
+                    </DialogDescription>
+                  </div>
+                  <SocialShare
+                    url={`${window.location.origin}/media#${selectedMedia.id}`}
+                    title={selectedMedia.title}
+                    description={selectedMedia.content.substring(0, 150)}
+                  />
+                </div>
+              </DialogHeader>
+
+              {selectedMedia.file_url && (
+                <div className="w-full overflow-hidden rounded-lg">
+                  {selectedMedia.type === 'video' ? (
+                    <video src={selectedMedia.file_url} controls className="w-full" />
+                  ) : (
+                    <img
+                      src={selectedMedia.file_url}
+                      alt={selectedMedia.title}
+                      className="w-full object-cover"
+                    />
+                  )}
+                </div>
+              )}
+
+              <div className="prose prose-invert max-w-none">
+                <p>{selectedMedia.content}</p>
+              </div>
+
+              {(selectedMedia.embed_url || selectedMedia.file_url) && (
+                <Button variant="outline" className="w-full" asChild>
+                  <a href={selectedMedia.embed_url || selectedMedia.file_url} target="_blank" rel="noopener noreferrer">
+                    {selectedMedia.type === 'blog' ? 'Read Full Article' : 'View Original'}
+                    <ExternalLink className="w-4 h-4 ml-2" />
+                  </a>
+                </Button>
+              )}
+
+              <Separator className="my-6" />
+
+              <CommentSection itemId={selectedMedia.id} itemType="media" />
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

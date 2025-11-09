@@ -9,6 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { SeoHead } from "@/components/SeoHead";
 import { SocialShare } from "@/components/SocialShare";
+import { CommentSection } from "@/components/CommentSection";
+import { Separator } from "@/components/ui/separator";
 
 const Scrolls = () => {
   const [scrolls, setScrolls] = useState<any[]>([]);
@@ -183,6 +185,10 @@ const Scrolls = () => {
               <div className="prose prose-invert max-w-none mt-4 dark:prose-invert">
                 <div dangerouslySetInnerHTML={{ __html: selectedScroll.content }} />
               </div>
+              
+              <Separator className="my-6" />
+              
+              <CommentSection itemId={selectedScroll.id} itemType="scroll" />
             </>
           )}
         </DialogContent>
