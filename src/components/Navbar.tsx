@@ -12,6 +12,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { NotificationsDropdown } from "@/components/NotificationsDropdown";
+import { MessagesDialog } from "@/components/messages/MessagesDialog";
 
 const Navbar = () => {
   const { user, isAdmin, signOut } = useAuth();
@@ -74,10 +75,8 @@ const Navbar = () => {
                 {/* Notifications Dropdown */}
                 <NotificationsDropdown />
 
-                {/* Messages Icon */}
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <MessageCircle className="w-5 h-5" />
-                </Button>
+                {/* Messages Dialog */}
+                <MessagesDialog />
 
                 {/* Empire Dropdown */}
                 <DropdownMenu>

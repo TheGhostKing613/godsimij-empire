@@ -2,9 +2,11 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import TierBadge from '@/components/TierBadge';
+import { MessageButton } from './MessageButton';
 
 interface ProfileHeaderProps {
   profile: {
+    id: string;
     avatar_url?: string | null;
     full_name?: string | null;
     email: string;
@@ -68,18 +70,21 @@ export function ProfileHeader({
           </div>
         </div>
 
-        {/* Action button */}
-        <div className="pb-2">
+        {/* Action buttons */}
+        <div className="pb-2 flex gap-2">
           {isOwnProfile ? (
             <Button onClick={onEditClick}>Edit Profile</Button>
           ) : (
-            <Button
-              onClick={onFollowClick}
-              disabled={followLoading}
-              variant={isFollowing ? 'secondary' : 'default'}
-            >
-              {isFollowing ? 'Following' : 'Follow'}
-            </Button>
+            <>
+              <Button
+                onClick={onFollowClick}
+                disabled={followLoading}
+                variant={isFollowing ? 'secondary' : 'default'}
+              >
+                {isFollowing ? 'Following' : 'Follow'}
+              </Button>
+              <MessageButton userId={profile.id} />
+            </>
           )}
         </div>
       </div>
