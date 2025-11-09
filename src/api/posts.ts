@@ -6,6 +6,8 @@ export interface CreatePostData {
   visibility: 'public' | 'followers' | 'private';
   category_id?: string;
   media_urls?: string[];
+  is_anonymous?: boolean;
+  display_name?: string;
 }
 
 export const createPost = async (userId: string, data: CreatePostData) => {
@@ -144,4 +146,15 @@ export const getCategories = async () => {
 
   if (error) throw error;
   return data;
+};
+
+export const checkAnonymousPostLimit = async (userId: string): Promise<boolean> => {
+  const { data, error } = await supabase
+    .from('anonymous_post_limits')
+    .select('id')
+    .eq('user_id', userId)
+    .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+  
+  if (error) throw error;
+  return (data?.length || 0) < 3;
 };

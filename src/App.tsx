@@ -14,6 +14,7 @@ import Scrolls from "./pages/Scrolls";
 import Media from "./pages/Media";
 import Projects from "./pages/Projects";
 import AI from "./pages/AI";
+import Empire from "./pages/Empire";
 import ApiDocs from "./pages/ApiDocs";
 import Declarations from "./pages/Declarations";
 import Contact from "./pages/Contact";
@@ -68,6 +69,7 @@ const App = () => (
                     <Route path="/api-docs" element={<ApiDocs />} />
                     <Route path="/declarations" element={<Declarations />} />
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/empire" element={<Empire />} />
                     <Route path="/profile/:userId" element={<Profile />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>

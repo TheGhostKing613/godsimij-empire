@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      anonymous_post_limits: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           color: string | null
@@ -303,7 +324,9 @@ export type Database = {
           comments_count: number | null
           content: string
           created_at: string | null
+          display_name: string | null
           id: string
+          is_anonymous: boolean | null
           is_featured: boolean | null
           is_pinned: boolean | null
           likes_count: number | null
@@ -319,7 +342,9 @@ export type Database = {
           comments_count?: number | null
           content: string
           created_at?: string | null
+          display_name?: string | null
           id?: string
+          is_anonymous?: boolean | null
           is_featured?: boolean | null
           is_pinned?: boolean | null
           likes_count?: number | null
@@ -335,7 +360,9 @@ export type Database = {
           comments_count?: number | null
           content?: string
           created_at?: string | null
+          display_name?: string | null
           id?: string
+          is_anonymous?: boolean | null
           is_featured?: boolean | null
           is_pinned?: boolean | null
           likes_count?: number | null
@@ -379,6 +406,8 @@ export type Database = {
           interests: string[] | null
           location: string | null
           post_count: number | null
+          tier: Database["public"]["Enums"]["user_tier"] | null
+          tier_awarded_at: string | null
           twitter_handle: string | null
           updated_at: string | null
           website: string | null
@@ -398,6 +427,8 @@ export type Database = {
           interests?: string[] | null
           location?: string | null
           post_count?: number | null
+          tier?: Database["public"]["Enums"]["user_tier"] | null
+          tier_awarded_at?: string | null
           twitter_handle?: string | null
           updated_at?: string | null
           website?: string | null
@@ -417,6 +448,8 @@ export type Database = {
           interests?: string[] | null
           location?: string | null
           post_count?: number | null
+          tier?: Database["public"]["Enums"]["user_tier"] | null
+          tier_awarded_at?: string | null
           twitter_handle?: string | null
           updated_at?: string | null
           website?: string | null
@@ -572,6 +605,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_tier_promotion: {
+        Args: { p_user_id: string }
+        Returns: Database["public"]["Enums"]["user_tier"]
+      }
       get_user_roles: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"][]
@@ -586,6 +623,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      user_tier: "wanderer" | "witness" | "scribe" | "flamekeeper" | "crown"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -714,6 +752,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      user_tier: ["wanderer", "witness", "scribe", "flamekeeper", "crown"],
     },
   },
 } as const

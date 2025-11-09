@@ -1,67 +1,90 @@
 import { Link } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { MessageSquare, Heart, Share2, HelpCircle, Megaphone, Lightbulb } from 'lucide-react';
+import { MessageSquare, Share2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { POST_TYPE_CONFIG, PostType } from '@/config/postTypes';
+import { UserTier } from '@/config/tiers';
+import TierBadge from './TierBadge';
+import ReactionPicker from './ReactionPicker';
+import CircuitGrid from './CircuitGrid';
+import { usePostReactions, useUserReaction, useReactToPost } from '@/hooks/useReactions';
+import { useAuth } from '@/contexts/AuthContext';
+import { cn } from '@/lib/utils';
 
 interface PostCardProps {
   post: any;
 }
 
-const postTypeIcons = {
-  discussion: MessageSquare,
-  question: HelpCircle,
-  announcement: Megaphone,
-  idea: Lightbulb,
-};
-
-const postTypeColors = {
-  discussion: 'bg-blue-500/10 text-blue-500',
-  question: 'bg-purple-500/10 text-purple-500',
-  announcement: 'bg-orange-500/10 text-orange-500',
-  idea: 'bg-green-500/10 text-green-500',
-};
-
 export function PostCard({ post }: PostCardProps) {
-  const Icon = postTypeIcons[post.post_type as keyof typeof postTypeIcons] || MessageSquare;
-  const typeColor = postTypeColors[post.post_type as keyof typeof postTypeColors] || 'bg-muted text-muted-foreground';
+  const { user } = useAuth();
+  const postType = post.post_type as PostType;
+  const config = POST_TYPE_CONFIG[postType] || POST_TYPE_CONFIG.discussion;
+  
+  const { data: reactionCounts } = usePostReactions(post.id);
+  const { data: userReaction } = useUserReaction(post.id);
+  const { mutate: reactToPost } = useReactToPost();
+
+  const isAnonymous = post.is_anonymous;
+  const displayName = isAnonymous ? post.display_name : post.profiles?.full_name;
+  const avatarUrl = isAnonymous ? null : post.profiles?.avatar_url;
+  const userTier = post.profiles?.tier as UserTier;
 
   return (
-    <Card className="p-6 hover:shadow-lg transition-shadow">
+    <Card className="relative p-6 hover:shadow-lg transition-all group overflow-hidden">
+      <CircuitGrid />
+      
+      {/* Post Type Color Bar */}
+      <div 
+        className={cn('absolute left-0 top-0 bottom-0 w-1 transition-all group-hover:w-2', config.bgClass)}
+        style={{ background: config.color }}
+      />
+
       {/* Header */}
-      <div className="flex items-start gap-3 mb-4">
-        <Link to={`/profile/${post.profiles?.id}`}>
-          <Avatar className="w-10 h-10">
-            <AvatarImage src={post.profiles?.avatar_url} />
-            <AvatarFallback className="bg-primary/10">
-              {post.profiles?.full_name?.[0]?.toUpperCase() || post.profiles?.email?.[0]?.toUpperCase() || '?'}
-            </AvatarFallback>
-          </Avatar>
-        </Link>
+      <div className="flex items-start gap-3 mb-4 relative z-10">
+        {isAnonymous ? (
+          <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+            <span className="text-lg">👻</span>
+          </div>
+        ) : (
+          <Link to={`/profile/${post.profiles?.id}`}>
+            <Avatar className={cn('w-10 h-10 transition-all', userTier && `ring-2 ring-offset-2 ring-offset-background`)}>
+              <AvatarImage src={avatarUrl} />
+              <AvatarFallback className="bg-primary/10">
+                {displayName?.[0]?.toUpperCase() || '?'}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
+        )}
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <Link
-              to={`/profile/${post.profiles?.id}`}
-              className="font-semibold hover:underline"
-            >
-              {post.profiles?.full_name || 'Anonymous'}
-            </Link>
-            <span className="text-sm text-muted-foreground">
-              @{post.profiles?.email?.split('@')[0]}
-            </span>
-            <span className="text-sm text-muted-foreground">·</span>
-            <span className="text-sm text-muted-foreground">
+            {isAnonymous ? (
+              <span className="font-semibold text-muted-foreground">{displayName}</span>
+            ) : (
+              <>
+                <Link
+                  to={`/profile/${post.profiles?.id}`}
+                  className="font-semibold hover:underline"
+                >
+                  {displayName || 'Anonymous'}
+                </Link>
+                {userTier && <TierBadge tier={userTier} size="sm" />}
+              </>
+            )}
+            <span className="text-muted-foreground">·</span>
+            <span className="text-muted-foreground text-sm">
               {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
             </span>
           </div>
 
+          {/* Post Type Badge */}
           <div className="flex items-center gap-2 mt-1">
-            <Badge variant="secondary" className={`${typeColor} gap-1`}>
-              <Icon className="w-3 h-3" />
-              {post.post_type}
+            <Badge className={`${config.bgClass} ${config.textClass} border-0 gap-1`} variant="secondary">
+              <span>{config.icon}</span>
+              {config.displayName}
             </Badge>
 
             {post.categories && (
@@ -78,7 +101,7 @@ export function PostCard({ post }: PostCardProps) {
       </div>
 
       {/* Content */}
-      <div className="mb-4">
+      <div className="mb-4 relative z-10">
         <p className="whitespace-pre-wrap break-words">
           {post.content.length > 500
             ? `${post.content.substring(0, 500)}...`
@@ -91,22 +114,25 @@ export function PostCard({ post }: PostCardProps) {
         )}
       </div>
 
-      {/* Engagement Stats */}
-      <div className="flex items-center gap-6 text-sm text-muted-foreground">
-        <button className="flex items-center gap-2 hover:text-primary transition-colors">
-          <Heart className="w-4 h-4" />
-          <span>{post.likes_count || 0}</span>
-        </button>
+      {/* Footer - Interactions */}
+      <div className="flex items-center gap-4 pt-4 border-t relative z-10">
+        <ReactionPicker
+          postId={post.id}
+          currentUserReaction={userReaction}
+          reactionCounts={reactionCounts || { flame: 0, rebel: 0, insight: 0, mindblown: 0 }}
+          onReact={(type) => reactToPost({ postId: post.id, reactionType: type })}
+          disabled={!user}
+        />
 
-        <button className="flex items-center gap-2 hover:text-primary transition-colors">
+        <Button variant="ghost" size="sm" className="gap-2">
           <MessageSquare className="w-4 h-4" />
           <span>{post.comments_count || 0}</span>
-        </button>
+        </Button>
 
-        <button className="flex items-center gap-2 hover:text-primary transition-colors">
+        <Button variant="ghost" size="sm" className="gap-2">
           <Share2 className="w-4 h-4" />
           <span>{post.shares_count || 0}</span>
-        </button>
+        </Button>
       </div>
     </Card>
   );

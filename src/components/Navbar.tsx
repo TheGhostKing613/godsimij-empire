@@ -40,6 +40,41 @@ const Navbar = () => {
             <Link to="/ai" className="text-foreground/80 hover:text-secondary transition-colors">
               AI
             </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="text-foreground/80 hover:text-primary transition-colors px-2">
+                  Empire
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center" className="w-56">
+                <DropdownMenuItem asChild>
+                  <a href="https://thewitnesshall.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                    <span>🏛️</span>
+                    <span>Witness Hall</span>
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="https://quantum-odyssey.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                    <span>⚡</span>
+                    <span>Quantum Odyssey</span>
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem disabled className="flex items-center gap-2">
+                  <span>📻</span>
+                  <span>Rebel Media</span>
+                  <span className="text-xs text-muted-foreground">(Soon)</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem disabled className="flex items-center gap-2">
+                  <span>🕸️</span>
+                  <span>GhostVault</span>
+                  <span className="text-xs text-muted-foreground">(Soon)</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/empire')}>
+                  View All Empire Properties
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Link to="/api-docs" className="text-foreground/80 hover:text-accent transition-colors flex items-center gap-1">
               <Code className="w-4 h-4" />
               API
