@@ -22,6 +22,7 @@ export type Database = {
           created_by: string | null
           date: string | null
           embed_url: string | null
+          file_url: string | null
           id: string
           title: string
           type: string
@@ -35,6 +36,7 @@ export type Database = {
           created_by?: string | null
           date?: string | null
           embed_url?: string | null
+          file_url?: string | null
           id?: string
           title: string
           type: string
@@ -48,6 +50,7 @@ export type Database = {
           created_by?: string | null
           date?: string | null
           embed_url?: string | null
+          file_url?: string | null
           id?: string
           title?: string
           type?: string
@@ -90,6 +93,7 @@ export type Database = {
           created_by: string | null
           description: string
           id: string
+          image_url: string | null
           link: string | null
           name: string
           status: string
@@ -102,6 +106,7 @@ export type Database = {
           created_by?: string | null
           description: string
           id?: string
+          image_url?: string | null
           link?: string | null
           name: string
           status?: string
@@ -114,6 +119,7 @@ export type Database = {
           created_by?: string | null
           description?: string
           id?: string
+          image_url?: string | null
           link?: string | null
           name?: string
           status?: string
@@ -128,6 +134,7 @@ export type Database = {
           created_at: string | null
           created_by: string | null
           description: string
+          file_url: string | null
           id: string
           pages: string | null
           status: string
@@ -140,6 +147,7 @@ export type Database = {
           created_at?: string | null
           created_by?: string | null
           description: string
+          file_url?: string | null
           id?: string
           pages?: string | null
           status?: string
@@ -152,6 +160,7 @@ export type Database = {
           created_at?: string | null
           created_by?: string | null
           description?: string
+          file_url?: string | null
           id?: string
           pages?: string | null
           status?: string

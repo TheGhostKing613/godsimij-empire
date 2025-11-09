@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { RichTextEditor } from './RichTextEditor';
+import { FileUpload } from './FileUpload';
 
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -36,6 +37,7 @@ const formSchema = z.object({
   pages: z.string().optional(),
   status: z.enum(['Draft', 'Published', 'Archived']),
   content: z.string().min(1, 'Content is required'),
+  file_url: z.string().optional(),
 });
 
 interface ScrollFormDialogProps {
@@ -55,6 +57,7 @@ export function ScrollFormDialog({ open, onOpenChange, scroll, onSuccess }: Scro
       pages: '',
       status: 'Draft',
       content: '',
+      file_url: '',
     },
   });
 
@@ -66,6 +69,7 @@ export function ScrollFormDialog({ open, onOpenChange, scroll, onSuccess }: Scro
         pages: scroll.pages || '',
         status: scroll.status,
         content: scroll.content,
+        file_url: scroll.file_url || '',
       });
     } else {
       form.reset({
@@ -74,6 +78,7 @@ export function ScrollFormDialog({ open, onOpenChange, scroll, onSuccess }: Scro
         pages: '',
         status: 'Draft',
         content: '',
+        file_url: '',
       });
     }
   }, [scroll, form]);
@@ -89,6 +94,7 @@ export function ScrollFormDialog({ open, onOpenChange, scroll, onSuccess }: Scro
           pages: values.pages || null,
           status: values.status,
           content: values.content,
+          file_url: values.file_url || null,
         };
         
         const { error } = await supabase
@@ -109,6 +115,7 @@ export function ScrollFormDialog({ open, onOpenChange, scroll, onSuccess }: Scro
           pages: values.pages || null,
           status: values.status,
           content: values.content,
+          file_url: values.file_url || null,
           created_by: user?.id,
         };
         
@@ -208,6 +215,26 @@ export function ScrollFormDialog({ open, onOpenChange, scroll, onSuccess }: Scro
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="file_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <FileUpload
+                      bucket="scrolls"
+                      accept=".pdf,.doc,.docx"
+                      value={field.value}
+                      onChange={(url) => field.onChange(url || '')}
+                      label="Scroll PDF (optional)"
+                      description="Upload a PDF version of the scroll"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}

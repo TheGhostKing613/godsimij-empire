@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { FileUpload } from './FileUpload';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -35,6 +36,7 @@ const formSchema = z.object({
   status: z.enum(['Planning', 'Development', 'Testing', 'Live', 'Archived']),
   link: z.string().url().optional().or(z.literal('')),
   category: z.string().optional(),
+  image_url: z.string().optional(),
 });
 
 interface ProjectFormDialogProps {
@@ -54,6 +56,7 @@ export function ProjectFormDialog({ open, onOpenChange, project, onSuccess }: Pr
       status: 'Planning',
       link: '',
       category: '',
+      image_url: '',
     },
   });
 
@@ -65,6 +68,7 @@ export function ProjectFormDialog({ open, onOpenChange, project, onSuccess }: Pr
         status: project.status,
         link: project.link || '',
         category: project.category || '',
+        image_url: project.image_url || '',
       });
     } else {
       form.reset({
@@ -73,6 +77,7 @@ export function ProjectFormDialog({ open, onOpenChange, project, onSuccess }: Pr
         status: 'Planning',
         link: '',
         category: '',
+        image_url: '',
       });
     }
   }, [project, form]);
@@ -88,6 +93,7 @@ export function ProjectFormDialog({ open, onOpenChange, project, onSuccess }: Pr
           status: values.status,
           link: values.link || null,
           category: values.category || null,
+          image_url: values.image_url || null,
         };
         
         const { error } = await supabase
@@ -108,6 +114,7 @@ export function ProjectFormDialog({ open, onOpenChange, project, onSuccess }: Pr
           status: values.status,
           link: values.link || null,
           category: values.category || null,
+          image_url: values.image_url || null,
           created_by: user?.id,
         };
         
@@ -218,6 +225,26 @@ export function ProjectFormDialog({ open, onOpenChange, project, onSuccess }: Pr
                   <FormLabel>Project Link (optional)</FormLabel>
                   <FormControl>
                     <Input {...field} type="url" placeholder="https://..." />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="image_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <FileUpload
+                      bucket="projects"
+                      accept="image/*"
+                      value={field.value}
+                      onChange={(url) => field.onChange(url || '')}
+                      label="Project Image (optional)"
+                      description="Upload a cover image for the project"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

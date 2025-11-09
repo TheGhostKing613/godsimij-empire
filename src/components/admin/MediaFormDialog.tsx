@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { FileUpload } from './FileUpload';
 
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -36,6 +37,7 @@ const formSchema = z.object({
   date: z.string(),
   author: z.string().optional(),
   embed_url: z.string().url().optional().or(z.literal('')),
+  file_url: z.string().optional(),
 });
 
 interface MediaFormDialogProps {
@@ -56,6 +58,7 @@ export function MediaFormDialog({ open, onOpenChange, media, onSuccess }: MediaF
       date: new Date().toISOString().split('T')[0],
       author: '',
       embed_url: '',
+      file_url: '',
     },
   });
 
@@ -68,6 +71,7 @@ export function MediaFormDialog({ open, onOpenChange, media, onSuccess }: MediaF
         date: media.date,
         author: media.author || '',
         embed_url: media.embed_url || '',
+        file_url: media.file_url || '',
       });
     } else {
       form.reset({
@@ -77,6 +81,7 @@ export function MediaFormDialog({ open, onOpenChange, media, onSuccess }: MediaF
         date: new Date().toISOString().split('T')[0],
         author: '',
         embed_url: '',
+        file_url: '',
       });
     }
   }, [media, form]);
@@ -93,6 +98,7 @@ export function MediaFormDialog({ open, onOpenChange, media, onSuccess }: MediaF
           date: values.date,
           author: values.author || null,
           embed_url: values.embed_url || null,
+          file_url: values.file_url || null,
         };
         
         const { error } = await supabase
@@ -114,6 +120,7 @@ export function MediaFormDialog({ open, onOpenChange, media, onSuccess }: MediaF
           date: values.date,
           author: values.author || null,
           embed_url: values.embed_url || null,
+          file_url: values.file_url || null,
           created_by: user?.id,
         };
         
@@ -237,6 +244,26 @@ export function MediaFormDialog({ open, onOpenChange, media, onSuccess }: MediaF
                   <FormLabel>Embed URL (optional)</FormLabel>
                   <FormControl>
                     <Input {...field} type="url" placeholder="https://..." />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="file_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <FileUpload
+                      bucket="media"
+                      accept="image/*,video/*,audio/*"
+                      value={field.value}
+                      onChange={(url) => field.onChange(url || '')}
+                      label="Media File (optional)"
+                      description="Upload an image, video, or audio file"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
