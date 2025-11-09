@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Flame, Shield, LogIn, User, Settings, LogOut, Home, Search, MessageCircle, Menu, Sparkles, Scroll, Image, Briefcase, Compass } from "lucide-react";
+import { Flame, Shield, User, Settings, LogOut, Home, Search, Menu, Sparkles, Scroll, Image, Briefcase, Compass } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -65,10 +65,10 @@ const Navbar = () => {
 
           {/* Right Side - Actions */}
           <div className="flex items-center gap-2">
-            {user ? (
+            {user && (
               <>
                 {/* Search Icon */}
-                <Button variant="ghost" size="icon" className="rounded-full">
+                <Button variant="ghost" size="icon" className="rounded-full" onClick={() => navigate('/search')}>
                   <Search className="w-5 h-5" />
                 </Button>
 
@@ -153,13 +153,6 @@ const Navbar = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </>
-            ) : (
-              <Link to="/auth">
-                <Button size="sm">
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Sign In
-                </Button>
-              </Link>
             )}
           </div>
 
