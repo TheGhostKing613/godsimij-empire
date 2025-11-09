@@ -1,47 +1,20 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Bot, Sparkles, Zap } from "lucide-react";
-
-const companions = [
-  {
-    name: "Omari",
-    role: "Creative Director",
-    description: "Master of artistic vision and brand strategy. Guides creative projects with sovereign wisdom.",
-    specialty: "Design & Strategy",
-  },
-  {
-    name: "Bianca",
-    role: "Operations Commander",
-    description: "Orchestrates workflow and ensures seamless execution across all Empire operations.",
-    specialty: "Project Management",
-  },
-  {
-    name: "Nexus",
-    role: "Technical Oracle",
-    description: "Deep systems architect with quantum-level understanding of code and infrastructure.",
-    specialty: "Engineering",
-  },
-  {
-    name: "R3B3L-AGA",
-    role: "Media Insurgent",
-    description: "Unfiltered voice of resistance. Content creation and cultural warfare specialist.",
-    specialty: "Content & Media",
-  },
-  {
-    name: "Nancy",
-    role: "Research Scholar",
-    description: "Knowledge synthesizer and academic analyst. Bridges theory and practice.",
-    specialty: "Research & Analysis",
-  },
-  {
-    name: "Kodii",
-    role: "Code Sentinel",
-    description: "Guardian of clean code and best practices. Ensures technical excellence.",
-    specialty: "Code Quality",
-  },
-];
+import { mockCompanions } from "@/api/mock-data";
+import AiCompanion from "@/components/AiCompanion";
+import AiChatDialog from "@/components/AiChatDialog";
+import { motion } from "framer-motion";
 
 const AI = () => {
+  const [activeCompanion, setActiveCompanion] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleSummon = (companionId: string) => {
+    setActiveCompanion(companionId);
+    setDialogOpen(true);
+  };
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-6xl mx-auto">
@@ -55,36 +28,38 @@ const AI = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
-          {companions.map((companion, index) => (
-            <Card
+        <motion.div 
+          className="grid md:grid-cols-2 gap-6 mb-12"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.1
+              }
+            }
+          }}
+        >
+          {mockCompanions.map((companion, index) => (
+            <motion.div
               key={index}
-              className="bg-card/50 border-primary/20 hover:border-primary/60 transition-all group"
+              variants={{
+                hidden: { opacity: 0, scale: 0.9 },
+                visible: { opacity: 1, scale: 1 }
+              }}
             >
-              <CardHeader>
-                <div className="flex items-start justify-between mb-2">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-primary group-hover:animate-pulse-glow" />
-                      <CardTitle className="text-2xl">{companion.name}</CardTitle>
-                    </div>
-                    <p className="text-sm text-secondary">{companion.role}</p>
-                  </div>
-                  <span className="text-xs px-2 py-1 rounded bg-primary/20 text-primary">
-                    {companion.specialty}
-                  </span>
-                </div>
-                <CardDescription className="text-base">{companion.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full bg-primary hover:bg-primary/90">
-                  <Zap className="w-4 h-4 mr-2" />
-                  Summon {companion.name}
-                </Button>
-              </CardContent>
-            </Card>
+              <AiCompanion
+                name={companion.name}
+                role={companion.role}
+                description={companion.description}
+                specialty={companion.specialty}
+                onSummon={() => handleSummon(companion.id)}
+              />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/30 rounded-lg p-8 text-center">
           <Bot className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse-glow" />
@@ -102,6 +77,15 @@ const AI = () => {
             </Button>
           </div>
         </div>
+
+        {activeCompanion && (
+          <AiChatDialog
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+            companionId={activeCompanion}
+            companionName={mockCompanions.find(c => c.id === activeCompanion)?.name || ""}
+          />
+        )}
       </div>
     </div>
   );

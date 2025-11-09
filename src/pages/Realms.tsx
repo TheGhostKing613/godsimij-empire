@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Flame, Ghost, Radio, Lock, Sparkles, Code, Hexagon, Film, BookOpen, Zap } from "lucide-react";
+import RealmCard from "@/components/RealmCard";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const realms = [
   {
@@ -68,6 +70,21 @@ const realms = [
 
 const Realms = () => {
   const [selectedRealm, setSelectedRealm] = useState<typeof realms[0] | null>(null);
+  const navigate = useNavigate();
+
+  const handleRealmClick = (realm: typeof realms[0]) => {
+    // Navigate to dedicated pages for these realms
+    if (realm.name === "FlameOS") {
+      navigate("/flameos");
+    } else if (realm.name === "GhostOS") {
+      navigate("/ghostos");
+    } else if (realm.name === "WhisperNet") {
+      navigate("/whispernet");
+    } else {
+      // Show modal for other realms
+      setSelectedRealm(realm);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -78,26 +95,37 @@ const Realms = () => {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {realms.map((realm) => {
-          const Icon = realm.icon;
-          return (
-            <Card
-              key={realm.name}
-              className="bg-card/50 border-primary/20 hover:border-primary/60 transition-all cursor-pointer group hover:scale-105"
-              onClick={() => setSelectedRealm(realm)}
-            >
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-2">
-                  <Icon className="w-8 h-8 text-primary group-hover:animate-pulse-glow" />
-                  <CardTitle className="text-xl">{realm.name}</CardTitle>
-                </div>
-                <CardDescription>{realm.description}</CardDescription>
-              </CardHeader>
-            </Card>
-          );
-        })}
-      </div>
+      <motion.div 
+        className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1
+            }
+          }
+        }}
+      >
+        {realms.map((realm) => (
+          <motion.div
+            key={realm.name}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 }
+            }}
+          >
+            <RealmCard
+              name={realm.name}
+              description={realm.description}
+              icon={realm.icon}
+              onClick={() => handleRealmClick(realm)}
+            />
+          </motion.div>
+        ))}
+      </motion.div>
 
       <Dialog open={!!selectedRealm} onOpenChange={() => setSelectedRealm(null)}>
         <DialogContent className="bg-card border-primary/30">

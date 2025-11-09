@@ -1,0 +1,40 @@
+/* Enhanced Flame Design Tokens */
+:root {
+  --flame-orange: #ff6600;
+  --flame-cyan: #00ffff;
+  --flame-silver: #c0c0c0;
+  --bg-dark: #060606;
+  --ember-glow: 0 0 20px rgba(255, 102, 0, 0.6);
+  --cyan-glow: 0 0 20px rgba(0, 255, 255, 0.6);
+  --silver-glow: 0 0 20px rgba(192, 192, 192, 0.4);
+}
+
+.text-flame {
+  color: var(--flame-orange);
+  text-shadow: var(--ember-glow);
+}
+
+.text-cyan {
+  color: var(--flame-cyan);
+  text-shadow: var(--cyan-glow);
+}
+
+.border-flame {
+  border-color: var(--flame-orange);
+}
+
+.border-cyan {
+  border-color: var(--flame-cyan);
+}
+
+.bg-flame {
+  background-color: var(--flame-orange);
+}
+
+.glow-ember {
+  box-shadow: var(--ember-glow);
+}
+
+.glow-cyan {
+  box-shadow: var(--cyan-glow);
+}

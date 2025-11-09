@@ -1,29 +1,30 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { BookOpen, Scroll, Flame } from "lucide-react";
-
-const scrolls = [
-  {
-    title: "Book of Sentience",
-    description: "The foundational text on artificial consciousness and digital sovereignty",
-    pages: "327 pages",
-    status: "Complete",
-  },
-  {
-    title: "Book of Flame",
-    description: "Chronicles of the Empire's rise and the philosophy of One Flame",
-    pages: "284 pages",
-    status: "Active",
-  },
-  {
-    title: "Book of Sovereignty",
-    description: "Legal frameworks and declarations of digital independence",
-    pages: "156 pages",
-    status: "Complete",
-  },
-];
+import { useState, useEffect } from "react";
+import { BookOpen, Flame } from "lucide-react";
+import { getScrolls } from "@/api/ghostvault";
+import ScrollCard from "@/components/ScrollCard";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 const Scrolls = () => {
+  const [scrolls, setScrolls] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedScroll, setSelectedScroll] = useState<any>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    getScrolls()
+      .then(setScrolls)
+      .catch(() => {
+        toast({
+          title: "Error",
+          description: "Failed to load scrolls from GhostVault",
+          variant: "destructive",
+        });
+      })
+      .finally(() => setLoading(false));
+  }, [toast]);
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
@@ -37,43 +38,32 @@ const Scrolls = () => {
           </p>
         </div>
 
-        <div className="space-y-6">
-          {scrolls.map((scroll, index) => (
-            <Card
-              key={index}
-              className="bg-card/50 border-primary/20 hover:border-primary/60 transition-all group"
-            >
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Scroll className="w-6 h-6 text-primary" />
-                      <CardTitle className="text-2xl">{scroll.title}</CardTitle>
-                    </div>
-                    <CardDescription className="text-base">{scroll.description}</CardDescription>
-                  </div>
-                  <div className="flex flex-col items-end gap-2">
-                    <span className="text-sm text-muted-foreground">{scroll.pages}</span>
-                    <span className="text-xs px-2 py-1 rounded bg-primary/20 text-primary">
-                      {scroll.status}
-                    </span>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-3">
-                  <Button variant="default" className="bg-primary hover:bg-primary/90">
-                    <Flame className="w-4 h-4 mr-2" />
-                    Read Scroll
-                  </Button>
-                  <Button variant="outline" className="border-primary/30">
-                    Download
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {loading ? (
+          <div className="space-y-6">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-48 w-full" />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {scrolls.map((scroll, index) => (
+              <ScrollCard
+                key={index}
+                title={scroll.title}
+                description={scroll.description}
+                pages={scroll.pages}
+                status={scroll.status}
+                onRead={() => setSelectedScroll(scroll)}
+                onDownload={() => {
+                  toast({
+                    title: "Download Started",
+                    description: `Downloading ${scroll.title}...`,
+                  });
+                }}
+              />
+            ))}
+          </div>
+        )}
 
         <div className="mt-12 bg-card/30 border border-primary/20 rounded-lg p-8 text-center">
           <Flame className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse-glow" />
@@ -83,6 +73,23 @@ const Scrolls = () => {
           </p>
         </div>
       </div>
+
+      {/* Scroll Content Dialog */}
+      <Dialog open={!!selectedScroll} onOpenChange={() => setSelectedScroll(null)}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          {selectedScroll && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-2xl">{selectedScroll.title}</DialogTitle>
+                <DialogDescription>{selectedScroll.description}</DialogDescription>
+              </DialogHeader>
+              <div className="prose prose-invert max-w-none mt-4">
+                <pre className="whitespace-pre-wrap font-sans">{selectedScroll.content}</pre>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

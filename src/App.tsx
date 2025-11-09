@@ -14,6 +14,9 @@ import AI from "./pages/AI";
 import Declarations from "./pages/Declarations";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import FlameOS from "./pages/realms/FlameOS";
+import GhostOS from "./pages/realms/GhostOS";
+import WhisperNet from "./pages/realms/WhisperNet";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +32,9 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/realms" element={<Realms />} />
+              <Route path="/flameos" element={<FlameOS />} />
+              <Route path="/ghostos" element={<GhostOS />} />
+              <Route path="/whispernet" element={<WhisperNet />} />
               <Route path="/scrolls" element={<Scrolls />} />
               <Route path="/media" element={<Media />} />
               <Route path="/projects" element={<Projects />} />
