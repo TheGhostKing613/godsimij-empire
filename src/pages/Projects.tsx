@@ -7,6 +7,8 @@ import { ExternalLink, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { SeoHead } from "@/components/SeoHead";
+import { SocialShare } from "@/components/SocialShare";
 
 const Projects = () => {
   const [projects, setProjects] = useState<any[]>([]);
@@ -58,6 +60,11 @@ const Projects = () => {
   };
   return (
     <div className="container mx-auto px-4 py-12">
+      <SeoHead
+        title="Quantum Odyssey - Revolutionary Applications"
+        description="Revolutionary applications from the Empire's innovation labs. Explore AI-powered tools and cutting-edge projects."
+        url="/projects"
+      />
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12 space-y-4">
           <div className="flex items-center justify-center gap-3">
@@ -98,11 +105,20 @@ const Projects = () => {
                     </div>
                   )}
                   <CardHeader>
-                    <div className="flex items-start justify-between mb-2">
-                      <CardTitle className="text-xl">{project.name}</CardTitle>
-                      <span className={`text-xs px-2 py-1 rounded ${getStatusColor(project.status)}`}>
-                        {project.status}
-                      </span>
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <CardTitle className="text-xl">{project.name}</CardTitle>
+                          <span className={`text-xs px-2 py-1 rounded ${getStatusColor(project.status)}`}>
+                            {project.status}
+                          </span>
+                        </div>
+                      </div>
+                      <SocialShare
+                        url={`${window.location.origin}/projects#${project.id}`}
+                        title={project.name}
+                        description={project.description}
+                      />
                     </div>
                     {project.category && (
                       <Badge variant="outline" className="w-fit mb-2">

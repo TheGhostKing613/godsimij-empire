@@ -7,6 +7,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { SeoHead } from "@/components/SeoHead";
+import { SocialShare } from "@/components/SocialShare";
 
 const Scrolls = () => {
   const [scrolls, setScrolls] = useState<any[]>([]);
@@ -49,6 +51,11 @@ const Scrolls = () => {
 
   return (
     <div className="container mx-auto px-4 py-12">
+      <SeoHead
+        title="Scroll Sanctum - Sacred Texts and Testimonies"
+        description="Sacred texts and testimonies from the Witness Hall. Explore published scrolls and wisdom from the digital resistance."
+        url="/scrolls"
+      />
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12 space-y-4">
           <div className="flex items-center justify-center gap-3">
@@ -149,8 +156,17 @@ const Scrolls = () => {
           {selectedScroll && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-2xl">{selectedScroll.title}</DialogTitle>
-                <DialogDescription>{selectedScroll.description}</DialogDescription>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <DialogTitle className="text-2xl">{selectedScroll.title}</DialogTitle>
+                    <DialogDescription>{selectedScroll.description}</DialogDescription>
+                  </div>
+                  <SocialShare
+                    url={`${window.location.origin}/scrolls#${selectedScroll.id}`}
+                    title={selectedScroll.title}
+                    description={selectedScroll.description}
+                  />
+                </div>
               </DialogHeader>
               {selectedScroll.file_url && (
                 <div className="mb-4">

@@ -7,6 +7,8 @@ import { Radio, Podcast, Film, MessageSquare, FileText, Music, Video, Image as I
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { SeoHead } from "@/components/SeoHead";
+import { SocialShare } from "@/components/SocialShare";
 
 const Media = () => {
   const [mediaItems, setMediaItems] = useState<any[]>([]);
@@ -76,6 +78,11 @@ const Media = () => {
   };
   return (
     <div className="container mx-auto px-4 py-12">
+      <SeoHead
+        title="Rebel Media Hub - Unfiltered Voices"
+        description="Unfiltered voices from the digital resistance. Explore blogs, podcasts, videos, and memes from independent creators."
+        url="/media"
+      />
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12 space-y-4">
           <div className="flex items-center justify-center gap-3">
@@ -151,8 +158,8 @@ const Media = () => {
                         </div>
                       )}
                       <CardHeader>
-                        <div className="flex items-start justify-between">
-                          <div>
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               <span className={`text-xs px-2 py-1 rounded ${getCategoryColor(post.type)}`}>
                                 Blog
@@ -169,6 +176,11 @@ const Media = () => {
                               {post.content.substring(0, 150)}...
                             </CardDescription>
                           </div>
+                          <SocialShare
+                            url={`${window.location.origin}/media#${post.id}`}
+                            title={post.title}
+                            description={post.content.substring(0, 150)}
+                          />
                         </div>
                       </CardHeader>
                       <CardContent>
