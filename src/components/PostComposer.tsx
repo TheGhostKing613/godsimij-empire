@@ -50,7 +50,7 @@ export function PostComposer() {
       content: '',
       post_type: 'discussion',
       visibility: 'public',
-      category_id: '',
+      category_id: undefined,
       is_anonymous: false,
       display_name: '',
     },
@@ -230,7 +230,6 @@ export function PostComposer() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">None</SelectItem>
                         {categories?.map((category) => (
                           <SelectItem key={category.id} value={category.id}>
                             <div className="flex items-center gap-2">
