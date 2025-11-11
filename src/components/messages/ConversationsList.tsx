@@ -52,14 +52,14 @@ export function ConversationsList({ conversations, selectedId, onSelect }: Conve
               <Avatar className="w-12 h-12">
                 <AvatarImage src={profile.avatar_url || undefined} />
                 <AvatarFallback>
-                  {profile.full_name?.[0] || profile.email[0]?.toUpperCase()}
+                  {profile.full_name?.[0] || '?'}
                 </AvatarFallback>
               </Avatar>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
                   <h4 className={cn('font-semibold truncate', hasUnread && 'text-primary')}>
-                    {profile.full_name || profile.email.split('@')[0]}
+                    {profile.full_name || 'User'}
                   </h4>
                   {conv.last_message && (
                     <span className="text-xs text-muted-foreground">

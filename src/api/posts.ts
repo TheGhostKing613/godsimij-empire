@@ -11,18 +11,29 @@ export interface CreatePostData {
 }
 
 export const createPost = async (userId: string, data: CreatePostData) => {
+  // Validate content length
+  const trimmedContent = data.content.trim();
+  
+  if (!trimmedContent) {
+    throw new Error('Post content cannot be empty');
+  }
+  
+  if (trimmedContent.length > 10000) {
+    throw new Error('Post content must be less than 10,000 characters');
+  }
+
   const { data: post, error } = await supabase
     .from('posts')
     .insert({
       user_id: userId,
       ...data,
+      content: trimmedContent,
     })
     .select(`
       *,
       profiles:user_id (
         id,
         full_name,
-        email,
         avatar_url,
         tier
       ),
@@ -48,7 +59,6 @@ export const getFeedPosts = async (userId?: string) => {
       profiles:user_id (
         id,
         full_name,
-        email,
         avatar_url,
         tier
       ),
@@ -92,7 +102,6 @@ export const getFollowingFeedPosts = async (userId: string) => {
       profiles:user_id (
         id,
         full_name,
-        email,
         avatar_url,
         tier
       ),
@@ -121,7 +130,6 @@ export const getPostsByCategory = async (categoryId: string) => {
       profiles:user_id (
         id,
         full_name,
-        email,
         avatar_url,
         tier
       ),
@@ -171,7 +179,6 @@ export const getPostsByUser = async (userId: string) => {
       profiles:user_id (
         id,
         full_name,
-        email,
         avatar_url,
         tier
       ),
@@ -200,7 +207,6 @@ export const getLikedPostsByUser = async (userId: string) => {
         profiles:user_id (
           id,
           full_name,
-          email,
           avatar_url,
           tier
         ),

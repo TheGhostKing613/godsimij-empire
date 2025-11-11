@@ -81,14 +81,13 @@ export function ChatWindow({ conversationId, onClose }: ChatWindowProps) {
           <Avatar className="w-10 h-10">
             <AvatarImage src={otherParticipant.avatar_url || undefined} />
             <AvatarFallback>
-              {otherParticipant.full_name?.[0] || otherParticipant.email[0]?.toUpperCase()}
+              {otherParticipant.full_name?.[0] || '?'}
             </AvatarFallback>
           </Avatar>
           <div>
             <h3 className="font-semibold">
-              {otherParticipant.full_name || otherParticipant.email.split('@')[0]}
+              {otherParticipant.full_name || 'User'}
             </h3>
-            <p className="text-xs text-muted-foreground">{otherParticipant.email}</p>
           </div>
         </div>
       )}
@@ -112,7 +111,7 @@ export function ChatWindow({ conversationId, onClose }: ChatWindowProps) {
                   <Avatar className="w-8 h-8">
                     <AvatarImage src={message.sender?.avatar_url || undefined} />
                     <AvatarFallback className="text-xs">
-                      {message.sender?.full_name?.[0] || message.sender?.email[0]?.toUpperCase()}
+                      {message.sender?.full_name?.[0] || '?'}
                     </AvatarFallback>
                   </Avatar>
 
