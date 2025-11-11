@@ -1,73 +1,289 @@
-# Welcome to your Lovable project
+# GodsIMiJ - AI-Powered Social Network
 
-## Project info
+A cutting-edge, AI-enhanced social networking platform built for the sovereign digital community. GodsIMiJ combines real-time social features with powerful AI capabilities, offering a unique space for discussions, media sharing, and community building.
 
-**URL**: https://lovable.dev/projects/399c3333-1069-4d21-89d8-a35e910e32b9
+## 🔥 Features
 
-## How can I edit this code?
+### Core Social Features
+- **Dynamic Feed System**: Discover and Following feeds with real-time updates
+- **Post Types**: Discussions, Questions, Announcements, and Ideas
+- **Anonymous Posting**: Share thoughts privately with display name customization (rate-limited for security)
+- **Rich Media Support**: Image uploads and media attachments
+- **Real-time Messaging**: Direct conversations between users
+- **Reactions System**: Flame-based reaction system for engagement
+- **Comments & Replies**: Threaded conversations on posts
+- **User Profiles**: Customizable profiles with cover images, bios, and interests
+- **Follow System**: Build your network and curate your feed
+- **Notifications**: Stay updated on interactions and mentions
 
-There are several ways of editing your application.
+### Advanced Features
+- **Tier System**: Progressive user tiers (Witness → Scribe → Architect → Oracle)
+- **Category System**: Organized content with 6 main categories
+  - AI Consciousness
+  - Digital Rebellion
+  - General
+  - Local AI
+  - Quantum Systems
+  - Sovereignty
+- **Search Functionality**: Find users, posts, and content
+- **Admin Dashboard**: Comprehensive management tools
+- **Empire Properties Integration**: Links to affiliated platforms
+  - Witness Hall
+  - Quantum Odyssey
+  - Rebel Media
+  - GhostVault (coming soon)
 
-**Use Lovable**
+### Security Features
+- **Row Level Security (RLS)**: Database-level access control
+- **Input Validation**: Protection against XSS and injection attacks
+- **Rate Limiting**: Conversation and anonymous post rate limits
+- **Password Breach Protection**: Enhanced authentication security
+- **Role-Based Access Control**: Admin and moderator roles
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/399c3333-1069-4d21-89d8-a35e910e32b9) and start prompting.
+## 🛠 Tech Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for blazing-fast development
+- **TanStack Query** for data fetching and caching
+- **React Router** for navigation
+- **shadcn/ui** component library
+- **Tailwind CSS** for styling
+- **React Hook Form + Zod** for form validation
+- **Framer Motion** for animations
 
-**Use your preferred IDE**
+### Backend (Lovable Cloud/Supabase)
+- **PostgreSQL** database with RLS
+- **Supabase Auth** for authentication
+- **Supabase Storage** for file uploads
+- **Real-time subscriptions** for live updates
+- **Edge Functions** for serverless logic
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Key Libraries
+- `@supabase/supabase-js` - Database client
+- `lucide-react` - Icon system
+- `date-fns` - Date formatting
+- `react-helmet-async` - SEO management
+- `sonner` - Toast notifications
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 📋 Prerequisites
 
-Follow these steps:
+- Node.js 18+ and npm
+- Supabase account (or Lovable Cloud)
+- Modern web browser
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+## 🚀 Getting Started
+
+### 1. Clone the Repository
+
+```bash
 git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
 cd <YOUR_PROJECT_NAME>
+```
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 2. Install Dependencies
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+npm install
+```
+
+### 3. Environment Setup
+
+Create a `.env` file in the root directory:
+
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+VITE_SUPABASE_PROJECT_ID=your_project_id
+```
+
+### 4. Start Development Server
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📦 Build for Production
 
-**Use GitHub Codespaces**
+```bash
+npm run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The production build will be in the `dist` folder.
 
-## What technologies are used for this project?
+## 🌐 Deployment
 
-This project is built with:
+### Netlify Deployment
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. **Connect Repository**:
+   - Log in to Netlify
+   - Click "Add new site" → "Import an existing project"
+   - Connect your Git repository
 
-## How can I deploy this project?
+2. **Build Settings**:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
 
-Simply open [Lovable](https://lovable.dev/projects/399c3333-1069-4d21-89d8-a35e910e32b9) and click on Share -> Publish.
+3. **Environment Variables**:
+   Add the following environment variables in Netlify dashboard:
+   ```
+   VITE_SUPABASE_URL
+   VITE_SUPABASE_PUBLISHABLE_KEY
+   VITE_SUPABASE_PROJECT_ID
+   ```
 
-## Can I connect a custom domain to my Lovable project?
+4. **Deploy**:
+   - Click "Deploy site"
+   - Netlify will automatically build and deploy your app
 
-Yes, you can!
+### Lovable Deployment
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Simply click the "Publish" button in the Lovable editor to deploy to Lovable's hosting.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 🗄 Database Schema
+
+### Core Tables
+- `profiles` - User profiles and metadata
+- `posts` - User posts with rich content
+- `post_comments` - Comments on posts
+- `post_likes` - Reactions to posts
+- `categories` - Content organization
+- `conversations` - Direct messaging threads
+- `messages` - Individual messages
+- `notifications` - User notifications
+- `user_connections` - Follow relationships
+- `user_roles` - Role management
+
+### Security
+All tables include Row Level Security (RLS) policies to ensure data privacy and proper access control.
+
+## 🔐 Authentication
+
+The app uses Supabase Auth with:
+- Email/password authentication
+- Auto-confirm email signups (for development)
+- Password breach protection
+- Session management
+- JWT-based authorization
+
+## 📱 Features Breakdown
+
+### Post Creation
+- Rich text content (up to 10,000 characters)
+- Post type selection
+- Visibility controls (Public, Followers, Private)
+- Category assignment
+- Anonymous posting with custom display names
+- Media attachments
+
+### Messaging System
+- Real-time direct messaging
+- Conversation management
+- Message deletion
+- Read receipts
+- Rate limiting (10 conversations/hour)
+
+### Tier Progression
+- **Witness** (Starting tier)
+- **Scribe** (10 posts + 50 reactions)
+- **Architect** (Manual promotion)
+- **Oracle** (Manual promotion)
+
+### Notifications
+- New followers
+- Post reactions
+- Comments on posts
+- Mentions
+- Direct messages
+
+## 🎨 Customization
+
+### Theming
+The app uses CSS variables for theming. Customize in `src/index.css`:
+- Primary colors
+- Background colors
+- Border styles
+- Typography
+- Animations
+
+### Design System
+All UI components follow the design system defined in:
+- `src/index.css` - CSS variables and global styles
+- `tailwind.config.ts` - Tailwind configuration
+- `src/components/ui/*` - Reusable UI components
+
+## 🧪 Testing
+
+```bash
+# Run type checking
+npm run type-check
+
+# Run linting
+npm run lint
+```
+
+## 📊 Performance
+
+- Server-side caching with TanStack Query
+- Optimistic updates for instant feedback
+- Image optimization with lazy loading
+- Code splitting for faster initial load
+- Real-time subscriptions for live updates
+
+## 🔒 Security Considerations
+
+### Production Checklist
+- [ ] Enable RLS on all tables
+- [ ] Review and test all RLS policies
+- [ ] Set up proper CORS policies
+- [ ] Enable rate limiting
+- [ ] Configure CSP headers
+- [ ] Set up monitoring and logging
+- [ ] Regular security audits
+- [ ] Keep dependencies updated
+
+### Input Validation
+- Client-side validation with Zod schemas
+- Server-side validation via RLS policies
+- XSS protection through sanitization
+- SQL injection prevention through parameterized queries
+
+## 📝 API Documentation
+
+The app uses Supabase's auto-generated API. Key endpoints:
+- `/auth` - Authentication
+- `/rest/v1/*` - REST API for all tables
+- `/realtime/v1/*` - Real-time subscriptions
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is proprietary and confidential.
+
+## 👥 Support
+
+For support, questions, or feedback:
+- Visit [Witness Hall](https://thewitnesshall.com)
+- Check [Quantum Odyssey](https://quantum-odyssey.com)
+- Explore [Rebel Media](https://r3b3lm3d14.thewitnesshall.com/)
+
+## 🙏 Acknowledgments
+
+- Built with [Lovable](https://lovable.dev)
+- Powered by [Supabase](https://supabase.com)
+- UI components from [shadcn/ui](https://ui.shadcn.com)
+
+---
+
+**One Flame. Infinite Realms.** 🔥
+
+© 2025 GodsIMiJ AI Solutions | Sovereign Systems Division

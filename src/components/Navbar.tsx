@@ -94,10 +94,11 @@ const Navbar = () => {
                         <span>Quantum Odyssey</span>
                       </a>
                     </DropdownMenuItem>
-                    <DropdownMenuItem disabled className="flex items-center gap-2">
-                      <span>📻</span>
-                      <span>Rebel Media</span>
-                      <span className="text-xs text-muted-foreground">(Soon)</span>
+                    <DropdownMenuItem asChild>
+                      <a href="https://r3b3lm3d14.thewitnesshall.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                        <span>📻</span>
+                        <span>Rebel Media</span>
+                      </a>
                     </DropdownMenuItem>
                     <DropdownMenuItem disabled className="flex items-center gap-2">
                       <span>🕸️</span>
