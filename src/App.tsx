@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { MessagingProvider } from "./contexts/MessagingContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -40,6 +41,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <MessagingProvider>
           <Routes>
             {/* Landing - no navbar/footer */}
             <Route path="/" element={<Landing />} />
@@ -87,6 +89,7 @@ const App = () => (
               </div>
             } />
           </Routes>
+          </MessagingProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

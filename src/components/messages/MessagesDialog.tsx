@@ -1,14 +1,13 @@
-import { useState } from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useConversations } from '@/hooks/useMessages';
+import { useMessaging } from '@/contexts/MessagingContext';
 import { ConversationsList } from './ConversationsList';
 import { ChatWindow } from './ChatWindow';
 
 export function MessagesDialog() {
-  const [open, setOpen] = useState(false);
-  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
+  const { isOpen, selectedConversationId, openMessages, closeMessages, selectConversation } = useMessaging();
   const { conversations } = useConversations();
 
   const totalUnread = conversations.reduce((sum, conv) => sum + (conv.unread_count || 0), 0);
@@ -19,7 +18,7 @@ export function MessagesDialog() {
         variant="ghost"
         size="icon"
         className="rounded-full relative"
-        onClick={() => setOpen(true)}
+        onClick={openMessages}
       >
         <MessageCircle className="w-5 h-5" />
         {totalUnread > 0 && (
@@ -29,7 +28,7 @@ export function MessagesDialog() {
         )}
       </Button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={isOpen} onOpenChange={closeMessages}>
         <DialogContent className="max-w-4xl h-[600px] p-0 bg-background">
           <DialogHeader className="px-6 py-4 border-b">
             <div className="flex items-center justify-between">
@@ -40,7 +39,7 @@ export function MessagesDialog() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setOpen(false)}
+                onClick={closeMessages}
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -53,7 +52,7 @@ export function MessagesDialog() {
               <ConversationsList
                 conversations={conversations}
                 selectedId={selectedConversationId}
-                onSelect={setSelectedConversationId}
+                onSelect={selectConversation}
               />
             </div>
 
@@ -62,7 +61,7 @@ export function MessagesDialog() {
               {selectedConversationId ? (
                 <ChatWindow
                   conversationId={selectedConversationId}
-                  onClose={() => setSelectedConversationId(null)}
+                  onClose={() => selectConversation(null!)}
                 />
               ) : (
                 <div className="h-full flex items-center justify-center text-muted-foreground">
