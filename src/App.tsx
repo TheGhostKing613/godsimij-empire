@@ -75,6 +75,7 @@ const App = () => (
                     <Route path="/flameos" element={<FlameOS />} />
                     <Route path="/ghostos" element={<GhostOS />} />
                     <Route path="/whispernet" element={<WhisperNet />} />
+                    <Route path="/ai" element={<AuraBree />} />
                     <Route path="/aurabree" element={<AuraBree />} />
                     <Route path="/media" element={<Media />} />
                     <Route path="/projects" element={<Projects />} />
