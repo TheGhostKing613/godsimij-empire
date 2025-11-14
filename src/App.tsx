@@ -22,6 +22,7 @@ import Notifications from "./pages/Notifications";
 import FlameOS from "./pages/realms/FlameOS";
 import GhostOS from "./pages/realms/GhostOS";
 import WhisperNet from "./pages/realms/WhisperNet";
+import AuraBree from "./pages/realms/AuraBree";
 import AdminLayout from "./pages/admin/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import ProjectsManagement from "./pages/admin/ProjectsManagement";
@@ -74,6 +75,7 @@ const App = () => (
                     <Route path="/flameos" element={<FlameOS />} />
                     <Route path="/ghostos" element={<GhostOS />} />
                     <Route path="/whispernet" element={<WhisperNet />} />
+                    <Route path="/aurabree" element={<AuraBree />} />
                     <Route path="/media" element={<Media />} />
                     <Route path="/projects" element={<Projects />} />
                     
