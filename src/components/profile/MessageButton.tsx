@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { MessageCircle, Loader2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useStartConversation } from '@/hooks/useMessages';
+import { useMessaging } from '@/contexts/MessagingContext';
 import { toast } from '@/hooks/use-toast';
 
 interface MessageButtonProps {
@@ -12,17 +12,18 @@ interface MessageButtonProps {
 export function MessageButton({ userId }: MessageButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const startConversationMutation = useStartConversation();
+  const { openConversation } = useMessaging();
 
   const handleMessage = async () => {
     setIsLoading(true);
     startConversationMutation.mutate(userId, {
-      onSuccess: () => {
+      onSuccess: (conversationId) => {
+        // Open the conversation in the messages dialog
+        openConversation(conversationId);
         toast({
           title: 'Success',
-          description: 'Opening conversation...',
+          description: 'Conversation opened',
         });
-        // The MessagesDialog will show the conversation
-        // Could enhance this to auto-open the messages dialog
       },
       onError: (error: Error) => {
         toast({

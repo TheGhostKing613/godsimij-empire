@@ -60,7 +60,7 @@ export function ChatWindow({ conversationId, onClose }: ChatWindowProps) {
   if (isLoading) {
     return (
       <div className="h-full flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -69,25 +69,26 @@ export function ChatWindow({ conversationId, onClose }: ChatWindowProps) {
   const otherParticipant = messages.find((m) => m.sender_id !== user?.id)?.sender;
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-background">
       {/* Chat Header */}
       {otherParticipant && (
-        <div className="px-6 py-4 border-b flex items-center gap-3">
+        <div className="px-6 py-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center gap-3">
           {onClose && (
             <Button variant="ghost" size="icon" onClick={onClose} className="md:hidden">
               <ArrowLeft className="w-4 h-4" />
             </Button>
           )}
-          <Avatar className="w-10 h-10">
+          <Avatar className="w-10 h-10 border-2 border-primary/20">
             <AvatarImage src={otherParticipant.avatar_url || undefined} />
-            <AvatarFallback>
+            <AvatarFallback className="bg-primary/10">
               {otherParticipant.full_name?.[0] || '?'}
             </AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="font-semibold">
+            <h3 className="font-semibold text-foreground">
               {otherParticipant.full_name || 'User'}
             </h3>
+            <p className="text-xs text-muted-foreground">Active now</p>
           </div>
         </div>
       )}
@@ -97,7 +98,8 @@ export function ChatWindow({ conversationId, onClose }: ChatWindowProps) {
         <div className="space-y-4">
           {messages.length === 0 ? (
             <div className="text-center text-muted-foreground py-12">
-              <p>No messages yet. Start the conversation!</p>
+              <p className="text-lg font-medium mb-2">No messages yet</p>
+              <p className="text-sm">Start the conversation!</p>
             </div>
           ) : (
             messages.map((message) => {
@@ -106,40 +108,45 @@ export function ChatWindow({ conversationId, onClose }: ChatWindowProps) {
               return (
                 <div
                   key={message.id}
-                  className={cn('flex gap-3', isOwn && 'flex-row-reverse')}
+                  className={cn('flex gap-3 group', isOwn && 'flex-row-reverse')}
                 >
-                  <Avatar className="w-8 h-8">
+                  <Avatar className="w-8 h-8 flex-shrink-0 border border-border">
                     <AvatarImage src={message.sender?.avatar_url || undefined} />
-                    <AvatarFallback className="text-xs">
+                    <AvatarFallback className="text-xs bg-muted">
                       {message.sender?.full_name?.[0] || '?'}
                     </AvatarFallback>
                   </Avatar>
 
-                  <div className={cn('flex-1 max-w-[70%]', isOwn && 'flex flex-col items-end')}>
+                  <div className={cn('flex flex-col gap-1 max-w-[70%]', isOwn && 'items-end')}>
                     <div
                       className={cn(
-                        'rounded-lg px-4 py-2 group relative',
+                        'rounded-2xl px-4 py-2.5 relative shadow-sm',
                         isOwn
                           ? 'bg-primary text-primary-foreground'
                           : 'bg-muted'
                       )}
                     >
-                      <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
-                      
+                      <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
+                        {message.content}
+                      </p>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 px-2">
+                      <span className="text-xs text-muted-foreground">
+                        {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
+                      </span>
                       {isOwn && (
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="absolute -right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6"
+                          className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity hover:text-destructive"
                           onClick={() => handleDelete(message.id)}
+                          disabled={deleteMessageMutation.isPending}
                         >
                           <Trash2 className="w-3 h-3" />
                         </Button>
                       )}
                     </div>
-                    <span className="text-xs text-muted-foreground mt-1">
-                      {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
-                    </span>
                   </div>
                 </div>
               );
@@ -149,21 +156,22 @@ export function ChatWindow({ conversationId, onClose }: ChatWindowProps) {
       </ScrollArea>
 
       {/* Message Input */}
-      <form onSubmit={handleSend} className="p-4 border-t">
+      <form onSubmit={handleSend} className="p-4 border-t bg-background">
         <div className="flex gap-2">
           <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type a message... (Shift+Enter for new line)"
-            className="min-h-[60px] max-h-[120px] resize-none"
+            placeholder="Type a message... (Enter to send, Shift+Enter for new line)"
+            className="min-h-[60px] max-h-[200px] resize-none flex-1"
             maxLength={2000}
+            disabled={sendMessageMutation.isPending}
           />
           <Button
             type="submit"
             size="icon"
             disabled={!content.trim() || sendMessageMutation.isPending}
-            className="h-[60px] w-[60px]"
+            className="h-[60px] w-[60px] flex-shrink-0"
           >
             {sendMessageMutation.isPending ? (
               <Loader2 className="w-5 h-5 animate-spin" />
