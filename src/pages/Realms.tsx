@@ -80,6 +80,8 @@ const Realms = () => {
       navigate("/ghostos");
     } else if (realm.name === "WhisperNet") {
       navigate("/whispernet");
+    } else if (realm.name === "AURA-BREE") {
+      navigate("/aurabree");
     } else {
       // Show modal for other realms
       setSelectedRealm(realm);
