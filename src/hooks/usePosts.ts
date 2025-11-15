@@ -81,8 +81,9 @@ export const useCreatePost = () => {
           body: {
             postId: post.id,
             postContent: variables.content,
-            postType: variables.postType,
+            postType: variables.post_type,
             categoryName: post.categories?.name,
+            userId: post.user_id,
           },
         });
 
