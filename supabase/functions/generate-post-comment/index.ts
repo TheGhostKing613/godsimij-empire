@@ -6,17 +6,15 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const AI_USER_ID = '00000000-0000-0000-0000-000000000001';
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { postId, postContent, postType, categoryName } = await req.json();
+    const { postId, postContent, postType, categoryName, userId } = await req.json();
 
-    if (!postId || !postContent) {
+    if (!postId || !postContent || !userId) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -114,7 +112,7 @@ serve(async (req) => {
       console.warn('Generated comment length out of bounds:', generatedComment.length);
     }
 
-    // Insert comment into database
+    // Insert comment into database using the post owner's user_id but mark as AI-generated
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     
@@ -132,8 +130,9 @@ serve(async (req) => {
       .from('post_comments')
       .insert({
         post_id: postId,
-        user_id: AI_USER_ID,
+        user_id: userId,
         content: generatedComment,
+        is_ai_generated: true,
       })
       .select()
       .single();

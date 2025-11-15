@@ -51,6 +51,7 @@ export interface PostComment {
   created_at: string;
   updated_at: string;
   is_edited: boolean;
+  is_ai_generated?: boolean;
   profiles?: Profile;
 }
 
