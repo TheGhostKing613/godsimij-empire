@@ -67,12 +67,37 @@ export const useCreatePost = () => {
       if (!user?.id) throw new Error('User not authenticated');
       return createPost(user.id, data);
     },
-    onSuccess: () => {
+    onSuccess: async (post, variables) => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       toast({
         title: 'Success',
         description: 'Post created successfully!',
       });
+
+      // Trigger AI comment generation asynchronously (non-blocking)
+      try {
+        const { supabase } = await import('@/integrations/supabase/client');
+        const { error } = await supabase.functions.invoke('generate-post-comment', {
+          body: {
+            postId: post.id,
+            postContent: variables.content,
+            postType: variables.postType,
+            categoryName: post.categories?.name,
+          },
+        });
+
+        if (!error) {
+          toast({
+            title: 'AI Assistant',
+            description: 'AURA-BREE commented on your post!',
+          });
+          // Refresh comments after AI generates one
+          queryClient.invalidateQueries({ queryKey: ['posts'] });
+        }
+      } catch (error) {
+        // Silently handle AI comment errors - don't disrupt user experience
+        console.warn('AI comment generation failed:', error);
+      }
     },
     onError: (error: Error) => {
       toast({
