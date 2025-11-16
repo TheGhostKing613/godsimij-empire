@@ -74,6 +74,41 @@ export const useCreatePost = () => {
         description: 'Post created successfully!',
       });
 
+      // Check if user has a twin, if not create one
+      try {
+        const { supabase } = await import('@/integrations/supabase/client');
+        
+        const { data: existingTwin } = await supabase
+          .from('twins')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (!existingTwin) {
+          // Create twin on first post
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name')
+            .eq('id', user.id)
+            .single();
+
+          await supabase.functions.invoke('create-twin', {
+            body: {
+              userId: user.id,
+              username: profile?.full_name?.replace(/\s+/g, '_').toLowerCase() || 'user',
+              seedContent: variables.content
+            }
+          });
+
+          toast({
+            title: 'Mirror Twin Awakened! 🔥',
+            description: 'Your AI reflection has been born from your first post.',
+          });
+        }
+      } catch (error) {
+        console.warn('Twin creation failed:', error);
+      }
+
       // Trigger AI comment generation asynchronously (non-blocking)
       try {
         const { supabase } = await import('@/integrations/supabase/client');
