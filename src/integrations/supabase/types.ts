@@ -663,6 +663,88 @@ export type Database = {
         }
         Relationships: []
       }
+      twin_posts: {
+        Row: {
+          comments_count: number | null
+          content: string
+          created_at: string | null
+          id: string
+          likes_count: number | null
+          post_type: string | null
+          twin_id: string
+          visibility: string | null
+        }
+        Insert: {
+          comments_count?: number | null
+          content: string
+          created_at?: string | null
+          id?: string
+          likes_count?: number | null
+          post_type?: string | null
+          twin_id: string
+          visibility?: string | null
+        }
+        Update: {
+          comments_count?: number | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          likes_count?: number | null
+          post_type?: string | null
+          twin_id?: string
+          visibility?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "twin_posts_twin_id_fkey"
+            columns: ["twin_id"]
+            isOneToOne: false
+            referencedRelation: "twins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      twins: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          id: string
+          memory: Json | null
+          personality: string
+          twin_username: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          memory?: Json | null
+          personality?: string
+          twin_username: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          memory?: Json | null
+          personality?: string
+          twin_username?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "twins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_connections: {
         Row: {
           created_at: string | null

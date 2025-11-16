@@ -24,6 +24,10 @@ import FlameOS from "./pages/realms/FlameOS";
 import GhostOS from "./pages/realms/GhostOS";
 import WhisperNet from "./pages/realms/WhisperNet";
 import AuraBree from "./pages/realms/AuraBree";
+import TwinTraining from "./pages/TwinTraining";
+import Arena from "./pages/Arena";
+import Clans from "./pages/Clans";
+import WarRoom from "./pages/WarRoom";
 import AdminLayout from "./pages/admin/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import ProjectsManagement from "./pages/admin/ProjectsManagement";
@@ -71,6 +75,12 @@ const App = () => (
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/search" element={<Search />} />
+                    
+                    {/* Twin System */}
+                    <Route path="/twin/training" element={<TwinTraining />} />
+                    <Route path="/arena" element={<Arena />} />
+                    <Route path="/clans" element={<Clans />} />
+                    <Route path="/war-room" element={<WarRoom />} />
                     
                     {/* Legacy routes - kept but hidden from navbar */}
                     <Route path="/realms" element={<Realms />} />

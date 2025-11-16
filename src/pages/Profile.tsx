@@ -11,6 +11,7 @@ import { ProfileAboutCard } from '@/components/profile/ProfileAboutCard';
 import { ProfileInterestsCard } from '@/components/profile/ProfileInterestsCard';
 import { ProfileActivityCard } from '@/components/profile/ProfileActivityCard';
 import { ProfileTimeline } from '@/components/profile/ProfileTimeline';
+import { TwinToggle } from '@/components/profile/TwinToggle';
 import TierProgressCard from '@/components/sidebar/TierProgressCard';
 
 export default function Profile() {
@@ -74,6 +75,7 @@ export default function Profile() {
           <ProfileInterestsCard interests={profile.interests} />
           <ProfileActivityCard profile={profile} />
           {isOwnProfile && <TierProgressCard />}
+          {isOwnProfile && <TwinToggle userId={userId} />}
         </aside>
 
         {/* Timeline */}

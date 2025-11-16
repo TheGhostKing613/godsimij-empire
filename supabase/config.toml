@@ -5,3 +5,12 @@ verify_jwt = false
 
 [functions.generate-post-comment]
 verify_jwt = false
+
+[functions.create-twin]
+verify_jwt = false
+
+[functions.train-twin]
+verify_jwt = false
+
+[functions.generate-twin-post]
+verify_jwt = false
