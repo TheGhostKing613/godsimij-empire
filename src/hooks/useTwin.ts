@@ -84,12 +84,79 @@ export const useTwin = (userId?: string) => {
     }
   });
 
+  const updateVisibility = useMutation({
+    mutationFn: async (visibility: 'public' | 'followers' | 'private') => {
+      if (!twin?.id) throw new Error('No twin found');
+      
+      const { data, error } = await supabase.functions.invoke('update-twin-visibility', {
+        body: { twinId: twin.id, visibility }
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['twin', userId] });
+      toast.success('Twin visibility updated! 🔥');
+    },
+    onError: (error) => {
+      console.error('Failed to update visibility:', error);
+      toast.error('Failed to update visibility');
+    }
+  });
+
+  const updateSettings = useMutation({
+    mutationFn: async (settings: { tone?: string; alignment?: string; auto_reply_enabled?: boolean }) => {
+      if (!twin?.id) throw new Error('No twin found');
+      
+      const { error } = await supabase
+        .from('twins')
+        .update(settings)
+        .eq('id', twin.id);
+
+      if (error) throw error;
+      return settings;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['twin', userId] });
+      toast.success('Twin settings updated! 🔥');
+    },
+    onError: (error) => {
+      console.error('Failed to update settings:', error);
+      toast.error('Failed to update settings');
+    }
+  });
+
+  const imprintMemory = useMutation({
+    mutationFn: async (content: string) => {
+      if (!twin?.id) throw new Error('No twin found');
+      
+      const { data, error } = await supabase.functions.invoke('imprint-memory', {
+        body: { twinId: twin.id, content }
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['twin', userId] });
+      toast.success('Memory imprinted! 🔥');
+    },
+    onError: (error) => {
+      console.error('Failed to imprint memory:', error);
+      toast.error('Failed to imprint memory');
+    }
+  });
+
   return {
     twin,
     isLoading,
     error,
     createTwin,
     toggleTwinActive,
-    generateTwinPost
+    generateTwinPost,
+    updateVisibility,
+    updateSettings,
+    imprintMemory
   };
 };

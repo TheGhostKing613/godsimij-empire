@@ -24,9 +24,10 @@ interface TwinPostCardProps {
 
 export const TwinPostCard = ({ post, twin, userAvatar }: TwinPostCardProps) => {
   return (
-    <Card className="relative overflow-hidden border-border/50 bg-gradient-to-br from-background/95 to-muted/30">
-      {/* Accent gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-purple-500/5 to-cyan-500/5 pointer-events-none" />
+    <Card className="relative overflow-hidden border-2 border-transparent bg-gradient-to-br from-background/95 to-muted/30 
+      before:absolute before:inset-0 before:rounded-lg before:p-[2px] before:bg-gradient-to-r before:from-orange-500 before:via-purple-500 before:to-cyan-500 before:-z-10 before:animate-pulse">
+      {/* Glowing neon border effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-purple-500/10 to-cyan-500/10 pointer-events-none animate-pulse" />
       
       <CardHeader className="relative space-y-3">
         <div className="flex items-start justify-between">
@@ -38,12 +39,13 @@ export const TwinPostCard = ({ post, twin, userAvatar }: TwinPostCardProps) => {
             />
             <div>
               <div className="flex items-center gap-2">
+                <span className="text-lg">🪞</span>
                 <p className="font-semibold text-foreground">{twin.twin_username}</p>
                 <Badge 
                   variant="outline" 
-                  className="bg-gradient-to-r from-orange-500/20 to-cyan-500/20 border-orange-500/50 text-xs"
+                  className="bg-gradient-to-r from-orange-500/20 to-cyan-500/20 border-orange-500/50 text-xs animate-pulse"
                 >
-                  🤖 AI Twin
+                  🤖 Mirror Twin Post
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground">
