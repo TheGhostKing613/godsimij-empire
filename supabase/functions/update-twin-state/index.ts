@@ -1,0 +1,55 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.80.0';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+interface UpdateStateRequest {
+  twinId: string;
+  state: 'idle' | 'evolving' | 'training' | 'active' | 'shadow';
+}
+
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
+
+    const { twinId, state }: UpdateStateRequest = await req.json();
+
+    console.log(`Updating twin ${twinId} state to ${state}`);
+
+    const { error } = await supabase
+      .from('twins')
+      .update({ current_state: state })
+      .eq('id', twinId);
+
+    if (error) {
+      throw error;
+    }
+
+    return new Response(
+      JSON.stringify({ 
+        success: true, 
+        state 
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+
+  } catch (error) {
+    console.error('Error in update-twin-state:', error);
+    return new Response(
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+  }
+});

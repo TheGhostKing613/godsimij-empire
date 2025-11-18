@@ -663,6 +663,38 @@ export type Database = {
         }
         Relationships: []
       }
+      twin_lore: {
+        Row: {
+          created_at: string | null
+          id: string
+          level: number
+          lore_entry: string
+          twin_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          level: number
+          lore_entry: string
+          twin_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          level?: number
+          lore_entry?: string
+          twin_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "twin_lore_twin_id_fkey"
+            columns: ["twin_id"]
+            isOneToOne: false
+            referencedRelation: "twins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       twin_memories: {
         Row: {
           content: string
@@ -733,12 +765,93 @@ export type Database = {
           },
         ]
       }
+      twin_quests: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          quest: string
+          twin_id: string
+          xp_reward: number
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          quest: string
+          twin_id: string
+          xp_reward: number
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          quest?: string
+          twin_id?: string
+          xp_reward?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "twin_quests_twin_id_fkey"
+            columns: ["twin_id"]
+            isOneToOne: false
+            referencedRelation: "twins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      twin_relations: {
+        Row: {
+          created_at: string | null
+          id: string
+          relation_type: string
+          strength: number | null
+          target_twin_id: string
+          twin_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          relation_type: string
+          strength?: number | null
+          target_twin_id: string
+          twin_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          relation_type?: string
+          strength?: number | null
+          target_twin_id?: string
+          twin_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "twin_relations_target_twin_id_fkey"
+            columns: ["target_twin_id"]
+            isOneToOne: false
+            referencedRelation: "twins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "twin_relations_twin_id_fkey"
+            columns: ["twin_id"]
+            isOneToOne: false
+            referencedRelation: "twins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       twins: {
         Row: {
           active: boolean | null
           alignment: string | null
           auto_reply_enabled: boolean | null
           created_at: string | null
+          current_state: string | null
           id: string
           level: number | null
           memory: Json | null
@@ -756,6 +869,7 @@ export type Database = {
           alignment?: string | null
           auto_reply_enabled?: boolean | null
           created_at?: string | null
+          current_state?: string | null
           id?: string
           level?: number | null
           memory?: Json | null
@@ -773,6 +887,7 @@ export type Database = {
           alignment?: string | null
           auto_reply_enabled?: boolean | null
           created_at?: string | null
+          current_state?: string | null
           id?: string
           level?: number | null
           memory?: Json | null
