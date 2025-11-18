@@ -14,3 +14,12 @@ verify_jwt = false
 
 [functions.generate-twin-post]
 verify_jwt = false
+
+[functions.update-twin-visibility]
+verify_jwt = false
+
+[functions.evolve-twin]
+verify_jwt = false
+
+[functions.imprint-memory]
+verify_jwt = false

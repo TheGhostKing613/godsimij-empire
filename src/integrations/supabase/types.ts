@@ -663,6 +663,35 @@ export type Database = {
         }
         Relationships: []
       }
+      twin_memories: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          twin_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          twin_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          twin_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "twin_memories_twin_id_fkey"
+            columns: ["twin_id"]
+            isOneToOne: false
+            referencedRelation: "twins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       twin_posts: {
         Row: {
           comments_count: number | null
@@ -707,33 +736,54 @@ export type Database = {
       twins: {
         Row: {
           active: boolean | null
+          alignment: string | null
+          auto_reply_enabled: boolean | null
           created_at: string | null
           id: string
+          level: number | null
           memory: Json | null
           personality: string
+          tone: string | null
+          traits: Json | null
           twin_username: string
           updated_at: string | null
           user_id: string
+          visibility: string | null
+          xp: number | null
         }
         Insert: {
           active?: boolean | null
+          alignment?: string | null
+          auto_reply_enabled?: boolean | null
           created_at?: string | null
           id?: string
+          level?: number | null
           memory?: Json | null
           personality?: string
+          tone?: string | null
+          traits?: Json | null
           twin_username: string
           updated_at?: string | null
           user_id: string
+          visibility?: string | null
+          xp?: number | null
         }
         Update: {
           active?: boolean | null
+          alignment?: string | null
+          auto_reply_enabled?: boolean | null
           created_at?: string | null
           id?: string
+          level?: number | null
           memory?: Json | null
           personality?: string
+          tone?: string | null
+          traits?: Json | null
           twin_username?: string
           updated_at?: string | null
           user_id?: string
+          visibility?: string | null
+          xp?: number | null
         }
         Relationships: [
           {

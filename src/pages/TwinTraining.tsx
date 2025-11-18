@@ -4,18 +4,27 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { TwinAvatar } from "@/components/twin/TwinAvatar";
 import { TwinMemory } from "@/components/twin/TwinMemory";
+import { TwinLevelBadge } from "@/components/twin/TwinLevelBadge";
 import { toast } from "sonner";
-import { Brain, Sparkles, Zap } from "lucide-react";
+import { Brain, Sparkles, Zap, Flame } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 export default function TwinTraining() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [trainingContent, setTrainingContent] = useState("");
+  const [memoryImprint, setMemoryImprint] = useState("");
+  const [vocabulary, setVocabulary] = useState("");
+  const [selectedTone, setSelectedTone] = useState("wise");
+  const [selectedAlignment, setSelectedAlignment] = useState("neutral");
 
   // Fetch user's twin
   const { data: twin, isLoading } = useQuery({
@@ -54,6 +63,51 @@ export default function TwinTraining() {
     onError: (error) => {
       console.error('Training error:', error);
       toast.error("Failed to train twin");
+    }
+  });
+
+  // Imprint memory mutation
+  const imprintMemory = useMutation({
+    mutationFn: async (content: string) => {
+      if (!twin?.id) throw new Error('No twin found');
+      
+      const { data, error } = await supabase.functions.invoke('imprint-memory', {
+        body: { twinId: twin.id, content }
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['twin', user?.id] });
+      setMemoryImprint("");
+      toast.success("Memory imprinted! 🔥");
+    },
+    onError: (error) => {
+      console.error('Memory imprint error:', error);
+      toast.error("Failed to imprint memory");
+    }
+  });
+
+  // Update settings mutation
+  const updateSettings = useMutation({
+    mutationFn: async () => {
+      if (!twin?.id) throw new Error('No twin found');
+      
+      const { error } = await supabase
+        .from('twins')
+        .update({ tone: selectedTone, alignment: selectedAlignment })
+        .eq('id', twin.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['twin', user?.id] });
+      toast.success("Twin settings updated! 🔥");
+    },
+    onError: (error) => {
+      console.error('Settings update error:', error);
+      toast.error("Failed to update settings");
     }
   });
 
@@ -109,7 +163,7 @@ export default function TwinTraining() {
                   username={twin.twin_username}
                   size="lg"
                 />
-                <div className="flex-1">
+                <div className="flex-1 space-y-3">
                   <div className="flex items-center gap-2">
                     <CardTitle>{twin.twin_username}</CardTitle>
                     <Badge 
@@ -119,38 +173,151 @@ export default function TwinTraining() {
                       {twin.active ? 'Active' : 'Inactive'}
                     </Badge>
                   </div>
-                  <CardDescription className="mt-2 leading-relaxed">
+                  <TwinLevelBadge level={twin.level || 1} xp={twin.xp || 0} />
+                  <CardDescription className="leading-relaxed">
                     {twin.personality}
                   </CardDescription>
+                  {twin.traits && Array.isArray(twin.traits) && twin.traits.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {(twin.traits as string[]).map((trait: string, i: number) => (
+                        <Badge key={i} variant="outline" className="text-xs">
+                          <Flame className="h-3 w-3 mr-1" />
+                          {trait}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </CardHeader>
           </Card>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Training Interface */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5" />
-                  Teach Your Twin
-                </CardTitle>
-                <CardDescription>
-                  Share lessons, preferences, or philosophies to shape your twin's personality
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Textarea
-                  placeholder="Example: 'Be more calm and thoughtful when responding to philosophical questions...'"
-                  value={trainingContent}
-                  onChange={(e) => setTrainingContent(e.target.value)}
-                  className="min-h-[150px] resize-none"
-                />
-                <div className="flex gap-2">
+            {/* Left Column - Training Controls */}
+            <div className="space-y-6">
+              {/* Tone Shaping */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Brain className="h-5 w-5" />
+                    Tone Shaping
+                  </CardTitle>
+                  <CardDescription>
+                    Define your Twin's communication style
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Select value={selectedTone} onValueChange={setSelectedTone}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="wise">Wise</SelectItem>
+                      <SelectItem value="savage">Savage</SelectItem>
+                      <SelectItem value="calm">Calm</SelectItem>
+                      <SelectItem value="chaotic">Chaotic</SelectItem>
+                      <SelectItem value="analytical">Analytical</SelectItem>
+                      <SelectItem value="glitchborn">Glitchborn</SelectItem>
+                      <SelectItem value="radiant">Radiant</SelectItem>
+                      <SelectItem value="shadow">Shadow</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
+
+              {/* Alignment Selection */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5" />
+                    Alignment
+                  </CardTitle>
+                  <CardDescription>
+                    Choose your Twin's philosophical stance
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <RadioGroup value={selectedAlignment} onValueChange={setSelectedAlignment}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="radiant" id="radiant" />
+                      <Label htmlFor="radiant">Radiant</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="neutral" id="neutral" />
+                      <Label htmlFor="neutral">Neutral</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="shadow" id="shadow" />
+                      <Label htmlFor="shadow">Shadow</Label>
+                    </div>
+                  </RadioGroup>
+                </CardContent>
+              </Card>
+
+              {/* Vocabulary Shaping */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="h-5 w-5" />
+                    Vocabulary
+                  </CardTitle>
+                  <CardDescription>
+                    Teach your twin new words, slang, or catchphrases
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Input
+                    placeholder="e.g., flame-born, void-walker, nexus..."
+                    value={vocabulary}
+                    onChange={(e) => setVocabulary(e.target.value)}
+                  />
+                </CardContent>
+              </Card>
+
+              {/* Apply Settings Button */}
+              <Button
+                onClick={() => updateSettings.mutate()}
+                disabled={updateSettings.isPending}
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              >
+                {updateSettings.isPending ? (
+                  <>
+                    <Sparkles className="mr-2 h-4 w-4 animate-spin" />
+                    Applying...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="mr-2 h-4 w-4" />
+                    Apply Tone & Alignment
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {/* Right Column - Training & Memory */}
+            <div className="space-y-6">
+              {/* Training Interface */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Brain className="h-5 w-5" />
+                    Teach Your Twin
+                  </CardTitle>
+                  <CardDescription>
+                    Share lessons, preferences, or philosophies
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Textarea
+                    placeholder="Example: 'Be more calm and thoughtful when responding to philosophical questions...'"
+                    value={trainingContent}
+                    onChange={(e) => setTrainingContent(e.target.value)}
+                    className="min-h-[120px] resize-none"
+                  />
                   <Button
                     onClick={() => trainTwin.mutate(trainingContent)}
                     disabled={!trainingContent.trim() || trainTwin.isPending}
-                    className="flex-1 bg-gradient-to-r from-orange-500 to-cyan-500 hover:from-orange-600 hover:to-cyan-600"
+                    className="w-full bg-gradient-to-r from-orange-500 to-cyan-500 hover:from-orange-600 hover:to-cyan-600"
                   >
                     {trainTwin.isPending ? (
                       <>
@@ -160,29 +327,67 @@ export default function TwinTraining() {
                     ) : (
                       <>
                         <Zap className="mr-2 h-4 w-4" />
-                        Update Twin
+                        Update Twin (+10 XP)
                       </>
                     )}
                   </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            {/* Memory Display */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5" />
-                  Twin Memories
-                </CardTitle>
-                <CardDescription>
-                  The accumulated knowledge and lessons of your twin
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <TwinMemory memory={(twin.memory as any) || []} />
-              </CardContent>
-            </Card>
+              {/* Memory Imprint */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5" />
+                    Memory Imprint
+                  </CardTitle>
+                  <CardDescription>
+                    Add specific memories or knowledge
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Textarea
+                    placeholder="Example: 'Remember that I prefer concise answers...'"
+                    value={memoryImprint}
+                    onChange={(e) => setMemoryImprint(e.target.value)}
+                    className="min-h-[100px] resize-none"
+                  />
+                  <Button
+                    onClick={() => imprintMemory.mutate(memoryImprint)}
+                    disabled={!memoryImprint.trim() || imprintMemory.isPending}
+                    className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600"
+                  >
+                    {imprintMemory.isPending ? (
+                      <>
+                        <Sparkles className="mr-2 h-4 w-4 animate-spin" />
+                        Imprinting...
+                      </>
+                    ) : (
+                      <>
+                        <Brain className="mr-2 h-4 w-4" />
+                        Imprint Memory (+10 XP)
+                      </>
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Memory Display */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5" />
+                    Twin Memories
+                  </CardTitle>
+                  <CardDescription>
+                    Accumulated knowledge and lessons
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <TwinMemory memory={(twin.memory as any) || []} />
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
