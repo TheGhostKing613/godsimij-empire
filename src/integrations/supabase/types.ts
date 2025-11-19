@@ -208,6 +208,41 @@ export type Database = {
         }
         Relationships: []
       }
+      flame_rituals: {
+        Row: {
+          allegiance: string
+          completed_at: string | null
+          id: string
+          response_text: string | null
+          ritual_text: string
+          user_id: string | null
+        }
+        Insert: {
+          allegiance: string
+          completed_at?: string | null
+          id?: string
+          response_text?: string | null
+          ritual_text: string
+          user_id?: string | null
+        }
+        Update: {
+          allegiance?: string
+          completed_at?: string | null
+          id?: string
+          response_text?: string | null
+          ritual_text?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flame_rituals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       media: {
         Row: {
           author: string | null
@@ -663,6 +698,33 @@ export type Database = {
         }
         Relationships: []
       }
+      seasonal_events: {
+        Row: {
+          active: boolean | null
+          effects: Json | null
+          end_date: string
+          id: string
+          name: string
+          start_date: string
+        }
+        Insert: {
+          active?: boolean | null
+          effects?: Json | null
+          end_date: string
+          id?: string
+          name: string
+          start_date: string
+        }
+        Update: {
+          active?: boolean | null
+          effects?: Json | null
+          end_date?: string
+          id?: string
+          name?: string
+          start_date?: string
+        }
+        Relationships: []
+      }
       twin_lore: {
         Row: {
           created_at: string | null
@@ -717,6 +779,44 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "twin_memories_twin_id_fkey"
+            columns: ["twin_id"]
+            isOneToOne: false
+            referencedRelation: "twins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      twin_memory_shards: {
+        Row: {
+          created_at: string | null
+          id: string
+          rarity: string | null
+          twin_id: string | null
+          type: string
+          value: string
+          xp: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          rarity?: string | null
+          twin_id?: string | null
+          type: string
+          value: string
+          xp?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          rarity?: string | null
+          twin_id?: string | null
+          type?: string
+          value?: string
+          xp?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "twin_memory_shards_twin_id_fkey"
             columns: ["twin_id"]
             isOneToOne: false
             referencedRelation: "twins"
@@ -840,6 +940,53 @@ export type Database = {
             foreignKeyName: "twin_relations_twin_id_fkey"
             columns: ["twin_id"]
             isOneToOne: false
+            referencedRelation: "twins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      twin_stats: {
+        Row: {
+          chaos: number | null
+          clarity: number | null
+          harmony: number | null
+          id: string
+          level: number | null
+          shadow: number | null
+          specialization: string | null
+          twin_id: string | null
+          wisdom: number | null
+          xp: number | null
+        }
+        Insert: {
+          chaos?: number | null
+          clarity?: number | null
+          harmony?: number | null
+          id?: string
+          level?: number | null
+          shadow?: number | null
+          specialization?: string | null
+          twin_id?: string | null
+          wisdom?: number | null
+          xp?: number | null
+        }
+        Update: {
+          chaos?: number | null
+          clarity?: number | null
+          harmony?: number | null
+          id?: string
+          level?: number | null
+          shadow?: number | null
+          specialization?: string | null
+          twin_id?: string | null
+          wisdom?: number | null
+          xp?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "twin_stats_twin_id_fkey"
+            columns: ["twin_id"]
+            isOneToOne: true
             referencedRelation: "twins"
             referencedColumns: ["id"]
           },
@@ -969,6 +1116,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_unlocks: {
+        Row: {
+          id: string
+          portal: string
+          unlocked: boolean | null
+          unlocked_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          portal: string
+          unlocked?: boolean | null
+          unlocked_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          portal?: string
+          unlocked?: boolean | null
+          unlocked_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_unlocks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
