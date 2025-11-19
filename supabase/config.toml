@@ -98,3 +98,15 @@ verify_jwt = false
 
 [functions.update-twin-state]
 verify_jwt = false
+
+[functions.evolve-memory-shards]
+verify_jwt = false
+
+[functions.twin-level-up]
+verify_jwt = false
+
+[functions.run-seasonal-events]
+verify_jwt = false
+
+[functions.unlock-portal]
+verify_jwt = false
