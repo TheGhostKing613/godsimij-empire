@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import { PostCard } from '@/components/PostCard';
+import { useState, useMemo } from 'react';
 import { PostComposer } from '@/components/PostComposer';
 import EmpireBroadcast from '@/components/EmpireBroadcast';
 import TopOfFlame from '@/components/TopOfFlame';
 import { SeoHead } from '@/components/SeoHead';
 import FeedSidebar from '@/components/FeedSidebar';
 import { useAuth } from '@/contexts/AuthContext';
-import { useFeedPosts } from '@/hooks/usePosts';
 import { useCategories } from '@/hooks/useCategories';
 import { NearbyTwinsCarousel } from '@/components/twin/NearbyTwinsCarousel';
+import { UnifiedFeedCard } from '@/components/UnifiedFeedCard';
+import { useUnifiedFeed } from '@/hooks/useUnifiedFeed';
+import { useTwinRecognition } from '@/hooks/useTwinRecognition';
+import { useTwin } from '@/hooks/useTwin';
 import { Loader2, Compass, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -18,12 +20,23 @@ const Index = () => {
   const { user } = useAuth();
   const [feedType, setFeedType] = useState<'discover' | 'following'>('discover');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const { data: posts, isLoading } = useFeedPosts(feedType);
+  const { data: feedItems, isLoading } = useUnifiedFeed(feedType, user?.id);
   const { data: categories } = useCategories();
+  const { twin } = useTwin(user?.id);
 
-  const filteredPosts = selectedCategory
-    ? posts?.filter(post => post.category_id === selectedCategory)
-    : posts;
+  // Extract visible twin IDs from feed for recognition
+  const visibleTwinIds = useMemo(() => {
+    return feedItems
+      ?.filter(item => item.type === 'twin_post' && item.twins?.id)
+      .map(item => item.twins.id) || [];
+  }, [feedItems]);
+
+  // Auto-recognize nearby twins
+  useTwinRecognition(twin?.id, visibleTwinIds);
+
+  const filteredItems = selectedCategory
+    ? feedItems?.filter(item => item.category_id === selectedCategory)
+    : feedItems;
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
@@ -90,10 +103,10 @@ const Index = () => {
                 <div className="flex justify-center py-12">
                   <Loader2 className="w-8 h-8 animate-spin" />
                 </div>
-              ) : filteredPosts && filteredPosts.length > 0 ? (
+              ) : filteredItems && filteredItems.length > 0 ? (
                 <div className="space-y-4">
-                  {filteredPosts.map((post) => (
-                    <PostCard key={post.id} post={post} />
+                  {filteredItems.map((item) => (
+                    <UnifiedFeedCard key={`${item.type}-${item.id}`} item={item} />
                   ))}
                 </div>
               ) : (
@@ -108,10 +121,10 @@ const Index = () => {
                 <div className="flex justify-center py-12">
                   <Loader2 className="w-8 h-8 animate-spin" />
                 </div>
-              ) : filteredPosts && filteredPosts.length > 0 ? (
+              ) : filteredItems && filteredItems.length > 0 ? (
                 <div className="space-y-4">
-                  {filteredPosts.map((post) => (
-                    <PostCard key={post.id} post={post} />
+                  {filteredItems.map((item) => (
+                    <UnifiedFeedCard key={`${item.type}-${item.id}`} item={item} />
                   ))}
                 </div>
               ) : (
