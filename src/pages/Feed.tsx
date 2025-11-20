@@ -8,6 +8,7 @@ import FeedSidebar from '@/components/FeedSidebar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFeedPosts } from '@/hooks/usePosts';
 import { useCategories } from '@/hooks/useCategories';
+import { NearbyTwinsCarousel } from '@/components/twin/NearbyTwinsCarousel';
 import { Loader2, Compass, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -33,6 +34,8 @@ const Index = () => {
       
       {user && <EmpireBroadcast />}
       <TopOfFlame />
+      
+      {user && <NearbyTwinsCarousel currentUserId={user.id} />}
       
       {user && <PostComposer />}
       

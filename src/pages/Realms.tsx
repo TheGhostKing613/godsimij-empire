@@ -1,9 +1,15 @@
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Flame, Ghost, Radio, Lock, Sparkles, Code, Hexagon, Film, BookOpen, Zap } from "lucide-react";
 import RealmCard from "@/components/RealmCard";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { PortalRuneButton } from "@/components/twin/PortalRuneButton";
+import { useTwin } from "@/hooks/useTwin";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const realms = [
   {
@@ -68,12 +74,60 @@ const realms = [
   },
 ];
 
+const portals = [
+  { name: "Flame Sanctum", level_required: 3 },
+  { name: "Veil Garden", level_required: 5 },
+  { name: "Echo Arena", level_required: 7 },
+  { name: "Starforge", level_required: 9 },
+];
+
 const Realms = () => {
+  const { user } = useAuth();
+  const { twin } = useTwin(user?.id);
   const [selectedRealm, setSelectedRealm] = useState<typeof realms[0] | null>(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  // Fetch user unlocks
+  const { data: unlocks } = useQuery({
+    queryKey: ['user-unlocks', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('user_unlocks')
+        .select('*')
+        .eq('user_id', user.id);
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user,
+  });
+
+  // Unlock portal mutation
+  const unlockPortal = useMutation({
+    mutationFn: async (portal: string) => {
+      const { data, error } = await supabase.functions.invoke('unlock-portal', {
+        body: { userId: user?.id, portal },
+      });
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success(data.message);
+        queryClient.invalidateQueries({ queryKey: ['user-unlocks', user?.id] });
+      } else {
+        toast.error(data.reason || 'Portal requirements not met');
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to unlock portal');
+    },
+  });
 
   const handleRealmClick = (realm: typeof realms[0]) => {
-    // Navigate to dedicated pages for these realms
     if (realm.name === "FlameOS") {
       navigate("/flameos");
     } else if (realm.name === "GhostOS") {
@@ -83,10 +137,25 @@ const Realms = () => {
     } else if (realm.name === "AURA-BREE") {
       navigate("/aurabree");
     } else {
-      // Show modal for other realms
       setSelectedRealm(realm);
     }
   };
+
+  const handlePortalClick = (portal: typeof portals[0]) => {
+    if (!user) {
+      toast.error("Sign in to unlock portals");
+      return;
+    }
+    unlockPortal.mutate(portal.name);
+  };
+
+  const portalsWithStatus = portals.map(portal => {
+    const unlock = unlocks?.find(u => u.portal === portal.name);
+    return {
+      ...portal,
+      unlocked: unlock?.unlocked || false,
+    };
+  });
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -96,6 +165,27 @@ const Realms = () => {
           Navigate the interconnected nodes of the GodsIMiJ digital civilization
         </p>
       </div>
+
+      {/* Portal Unlock Section */}
+      {user && twin && (
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-8 text-primary">
+            Realm Portals
+          </h2>
+          <p className="text-center text-muted-foreground mb-8">
+            Level up your Twin to unlock mystical gateways
+          </p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {portalsWithStatus.map((portal) => (
+              <PortalRuneButton
+                key={portal.name}
+                portal={portal}
+                onClick={() => handlePortalClick(portal)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       <motion.div 
         className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
