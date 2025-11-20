@@ -25,6 +25,9 @@ import GhostOS from "./pages/realms/GhostOS";
 import WhisperNet from "./pages/realms/WhisperNet";
 import AuraBree from "./pages/realms/AuraBree";
 import TwinTraining from "./pages/TwinTraining";
+import TwinStats from "./pages/TwinStats";
+import Rituals from "./pages/Rituals";
+import Season from "./pages/Season";
 import Arena from "./pages/Arena";
 import Clans from "./pages/Clans";
 import WarRoom from "./pages/WarRoom";
@@ -78,6 +81,9 @@ const App = () => (
                     
                     {/* Twin System */}
                     <Route path="/twin/training" element={<TwinTraining />} />
+                    <Route path="/twin/stats" element={<TwinStats />} />
+                    <Route path="/rituals" element={<Rituals />} />
+                    <Route path="/season" element={<Season />} />
                     <Route path="/arena" element={<Arena />} />
                     <Route path="/clans" element={<Clans />} />
                     <Route path="/war-room" element={<WarRoom />} />
