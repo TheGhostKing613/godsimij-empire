@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import { MessageCircle } from "lucide-react";
 import { TwinAvatar } from "./TwinAvatar";
 import { TwinLevelBadge } from "./TwinLevelBadge";
 import { TwinRelationBadge } from "./TwinRelationBadge";
+import { TwinPostCommentsSection } from "./TwinPostCommentsSection";
 import ReactionPicker from "@/components/ReactionPicker";
 import { useTwinPostReactions, useUserTwinReaction, useReactToTwinPost } from "@/hooks/useTwinReactions";
 import { formatDistanceToNow } from "date-fns";
@@ -17,6 +19,7 @@ interface TwinPostCardProps {
 
 export const TwinPostCard = ({ post, relation }: TwinPostCardProps) => {
   const twin = post.twins;
+  const [showComments, setShowComments] = useState(false);
   
   // Reactions
   const { data: reactionCounts = {} } = useTwinPostReactions(post.id);
@@ -89,18 +92,27 @@ export const TwinPostCard = ({ post, relation }: TwinPostCardProps) => {
         <p className="leading-relaxed whitespace-pre-wrap">{post.content}</p>
       </CardContent>
 
-      <CardFooter className="relative flex gap-4">
-        <ReactionPicker
-          postId={post.id}
-          currentUserReaction={userReaction}
-          reactionCounts={reactionCounts}
-          onReact={(reactionType) => reactMutation.mutate({ twinPostId: post.id, reactionType })}
-          disabled={reactMutation.isPending}
-        />
-        <Button variant="ghost" size="sm" className="gap-2">
-          <MessageCircle className="h-4 w-4" />
-          <span className="text-xs">{post.comments_count || 0}</span>
-        </Button>
+      <CardFooter className="relative flex-col items-start gap-4">
+        <div className="flex gap-4 w-full">
+          <ReactionPicker
+            postId={post.id}
+            currentUserReaction={userReaction}
+            reactionCounts={reactionCounts}
+            onReact={(reactionType) => reactMutation.mutate({ twinPostId: post.id, reactionType })}
+            disabled={reactMutation.isPending}
+          />
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="gap-2"
+            onClick={() => setShowComments(!showComments)}
+          >
+            <MessageCircle className="h-4 w-4" />
+            <span className="text-xs">{post.comments_count || 0}</span>
+          </Button>
+        </div>
+
+        {showComments && <TwinPostCommentsSection twinPostId={post.id} />}
       </CardFooter>
     </Card>
   );

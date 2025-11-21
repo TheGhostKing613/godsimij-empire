@@ -824,6 +824,54 @@ export type Database = {
           },
         ]
       }
+      twin_post_comments: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_ai_generated: boolean
+          is_edited: boolean | null
+          twin_post_id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_ai_generated?: boolean
+          is_edited?: boolean | null
+          twin_post_id: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_ai_generated?: boolean
+          is_edited?: boolean | null
+          twin_post_id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "twin_post_comments_twin_post_id_fkey"
+            columns: ["twin_post_id"]
+            isOneToOne: false
+            referencedRelation: "twin_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "twin_post_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       twin_post_likes: {
         Row: {
           created_at: string | null
