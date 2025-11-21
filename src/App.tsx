@@ -28,6 +28,7 @@ import TwinTraining from "./pages/TwinTraining";
 import TwinStats from "./pages/TwinStats";
 import Rituals from "./pages/Rituals";
 import Season from "./pages/Season";
+import Community from "./pages/Community";
 import Arena from "./pages/Arena";
 import Clans from "./pages/Clans";
 import WarRoom from "./pages/WarRoom";
@@ -84,6 +85,7 @@ const App = () => (
                     <Route path="/twin/stats" element={<TwinStats />} />
                     <Route path="/rituals" element={<Rituals />} />
                     <Route path="/season" element={<Season />} />
+                    <Route path="/community" element={<Community />} />
                     <Route path="/arena" element={<Arena />} />
                     <Route path="/clans" element={<Clans />} />
                     <Route path="/war-room" element={<WarRoom />} />

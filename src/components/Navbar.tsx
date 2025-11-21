@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Flame, Shield, User, Settings, LogOut, Home, Search, Menu, Sparkles, LogIn } from "lucide-react";
+import { Flame, Shield, User, Settings, LogOut, Home, Search, Menu, Sparkles, LogIn, Users } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,6 +53,7 @@ const Navbar = () => {
           {/* Center Navigation - Desktop */}
           <div className="hidden md:flex items-center gap-1">
             <NavButton to="/feed" icon={Home} label="Feed" active={isActive('/feed')} />
+            <NavButton to="/community" icon={Users} label="Community" active={isActive('/community')} />
             {user && (
               <NavButton to={`/profile/${user.id}`} icon={User} label="Profile" active={isActive('/profile')} />
             )}
@@ -170,6 +171,10 @@ const Navbar = () => {
                 <DropdownMenuItem onClick={() => navigate('/feed')}>
                   <Home className="w-4 h-4 mr-2" />
                   Feed
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/community')}>
+                  <Users className="w-4 h-4 mr-2" />
+                  Community
                 </DropdownMenuItem>
                 {user && (
                   <DropdownMenuItem onClick={() => navigate(`/profile/${user.id}`)}>
