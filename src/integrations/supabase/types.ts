@@ -824,6 +824,45 @@ export type Database = {
           },
         ]
       }
+      twin_post_likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          reaction_type: string
+          twin_post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          reaction_type?: string
+          twin_post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          reaction_type?: string
+          twin_post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "twin_post_likes_twin_post_id_fkey"
+            columns: ["twin_post_id"]
+            isOneToOne: false
+            referencedRelation: "twin_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "twin_post_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       twin_posts: {
         Row: {
           comments_count: number | null
