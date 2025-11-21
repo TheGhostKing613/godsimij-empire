@@ -110,3 +110,9 @@ verify_jwt = false
 
 [functions.unlock-portal]
 verify_jwt = false
+
+[functions.generate-twin-comment]
+verify_jwt = false
+
+[functions.generate-post-comment]
+verify_jwt = false
