@@ -16,6 +16,8 @@ export const useFollowUser = () => {
     onSuccess: async (_, followingId) => {
       queryClient.invalidateQueries({ queryKey: ['profile', followingId] });
       queryClient.invalidateQueries({ queryKey: ['followStatus'] });
+      queryClient.invalidateQueries({ queryKey: ['follow-status-all'] });
+      queryClient.invalidateQueries({ queryKey: ['all-profiles'] });
       
       // Create notification for the followed user
       if (user?.id) {
@@ -52,6 +54,8 @@ export const useFollowUser = () => {
     onSuccess: (_, followingId) => {
       queryClient.invalidateQueries({ queryKey: ['profile', followingId] });
       queryClient.invalidateQueries({ queryKey: ['followStatus'] });
+      queryClient.invalidateQueries({ queryKey: ['follow-status-all'] });
+      queryClient.invalidateQueries({ queryKey: ['all-profiles'] });
       toast({
         title: 'Success',
         description: 'You unfollowed this user.',
