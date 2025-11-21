@@ -1,10 +1,12 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MessageCircle, Share2 } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { TwinAvatar } from "./TwinAvatar";
 import { TwinLevelBadge } from "./TwinLevelBadge";
 import { TwinRelationBadge } from "./TwinRelationBadge";
+import ReactionPicker from "@/components/ReactionPicker";
+import { useTwinPostReactions, useUserTwinReaction, useReactToTwinPost } from "@/hooks/useTwinReactions";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +17,11 @@ interface TwinPostCardProps {
 
 export const TwinPostCard = ({ post, relation }: TwinPostCardProps) => {
   const twin = post.twins;
+  
+  // Reactions
+  const { data: reactionCounts = {} } = useTwinPostReactions(post.id);
+  const { data: userReaction } = useUserTwinReaction(post.id);
+  const reactMutation = useReactToTwinPost();
   
   const alignmentBorderColor = {
     radiant: 'border-cyan-500/40',
@@ -83,10 +90,13 @@ export const TwinPostCard = ({ post, relation }: TwinPostCardProps) => {
       </CardContent>
 
       <CardFooter className="relative flex gap-4">
-        <Button variant="ghost" size="sm" className="gap-2">
-          <Heart className="h-4 w-4" />
-          <span className="text-xs">{post.likes_count || 0}</span>
-        </Button>
+        <ReactionPicker
+          postId={post.id}
+          currentUserReaction={userReaction}
+          reactionCounts={reactionCounts}
+          onReact={(reactionType) => reactMutation.mutate({ twinPostId: post.id, reactionType })}
+          disabled={reactMutation.isPending}
+        />
         <Button variant="ghost" size="sm" className="gap-2">
           <MessageCircle className="h-4 w-4" />
           <span className="text-xs">{post.comments_count || 0}</span>
